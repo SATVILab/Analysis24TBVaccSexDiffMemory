@@ -1,0 +1,34 @@
+# --------------------------------------------
+# CITATION file created with {cffr} R package
+# See also: https://docs.ropensci.org/cffr/
+# --------------------------------------------
+ 
+cff-version: 1.2.0
+message: 'To cite package "Analysis24TBVaccSexDiffMemory" in publications use:'
+type: software
+title: 'Analysis24TBVaccSexDiffMemory: Assess if there are differences by sex in TB
+  vaccine-induced immune responses'
+version: 0.0.0-1
+abstract: Assess if there are differences by sex in TB vaccine-induced immune responses
+authors:
+- family-names: Rodo
+  given-names: Miguel
+  email: miguel.rodo@uct.ac.za
+preferred-citation:
+  type: generic
+  title: 'Analysis24TBVaccSexDiffMemory: Assess if there are differences by sex in
+    TB vaccine-induced immune responses'
+  authors:
+  - family-names: Rodo
+    given-names: Miguel
+    email: miguel.rodo@uct.ac.za
+  url: https://github.com/SATVILab/Analysis24TBVaccSexDiffMemory/#readme
+  abstract: Assess if there are differences by sex in TB vaccine-induced immune responses
+  version: 0.0.0-1
+repository-code: https://github.com/SATVILab/Analysis24TBVaccSexDiffMemory
+url: https://github.com/SATVILab/Analysis24TBVaccSexDiffMemory/#readme
+contact:
+- family-names: Rodo
+  given-names: Miguel
+  email: miguel.rodo@uct.ac.za
+

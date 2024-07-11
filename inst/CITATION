@@ -1,0 +1,11 @@
+citHeader("To cite `Analysis24TBVaccSexDiffMemory` in publications use:")
+
+bibentry(bibtype = "Misc",
+         key = "rodo",
+         title = "Analysis24TBVaccSexDiffMemory: Assess if there are differences by sex in TB vaccine-induced immune responses",
+         author = person(given = "Miguel",
+                         family = "Rodo",
+                         email = "miguel.rodo@uct.ac.za"),
+         url = "https://github.com/SATVILab/Analysis24TBVaccSexDiffMemory/#readme",
+         abstract = "Assess if there are differences by sex in TB vaccine-induced immune responses",
+         version = "0.0.0-1")
