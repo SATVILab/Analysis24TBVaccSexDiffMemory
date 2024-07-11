@@ -1,0 +1,16 @@
+Package: Analysis24TBVaccSexDiffMemory
+Title: Assess if there are differences by sex in TB vaccine-induced immune
+    responses
+Version: 0.0.0-1
+Authors@R: 
+    person("Miguel", "Rodo", , "miguel.rodo@uct.ac.za", role = c("aut", "cre"))
+Maintainer: Miguel Rodo <miguel.rodo@uct.ac.za>
+Description: Assess if there are differences by sex in TB vaccine-induced
+    immune responses
+License: {{ License }}
+URL: https://github.com/SATVILab/Analysis24TBVaccSexDiffMemory/#readme
+BugReports: 
+    https://github.com/SATVILab/Analysis24TBVaccSexDiffMemory/issues
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
