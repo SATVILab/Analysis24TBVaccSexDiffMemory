@@ -3,10 +3,6 @@
     "Version": "4.4.1",
     "Repositories": [
       {
-        "Name": "BioCcontainers",
-        "URL": "https://bioconductor.org/packages/3.19/container-binaries/bioconductor_docker"
-      },
-      {
         "Name": "BioCsoft",
         "URL": "https://bioconductor.org/packages/3.19/bioc"
       },
@@ -27,6 +23,10 @@
         "URL": "https://bioconductor.org/packages/3.19/books"
       },
       {
+        "Name": "BioCcontainers",
+        "URL": "https://bioconductor.org/packages/3.19/container-binaries/bioconductor_docker"
+      },
+      {
         "Name": "CRAN",
         "URL": "https://p3m.dev/cran/latest"
       }
@@ -38,18 +38,19 @@
   "Packages": {
     "DataTidy24TBVaccSexDiff": {
       "Package": "DataTidy24TBVaccSexDiff",
-      "Version": "1.13.0",
+      "Version": "1.13.1",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteUsername": "SATVILab",
       "RemoteRepo": "DataTidy24TBVaccSexDiff",
       "RemoteRef": "main",
-      "RemoteSha": "c711c71a61f11810b3c79454b10c405803b94daa",
+      "RemoteSha": "7479cd175ab4017ca85ac00fe0bcbc258814f85e",
       "Requirements": [
-        "R"
+        "R",
+        "dplyr"
       ],
-      "Hash": "4a6726a5fa72c80f524fc1eb1010df18"
+      "Hash": "35e7b5fb6789d9b8fc719c03adc4c88a"
     },
     "MASS": {
       "Package": "MASS",
@@ -87,7 +88,7 @@
       "Package": "R6",
       "Version": "2.5.1",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R"
       ],
@@ -97,7 +98,7 @@
       "Package": "RColorBrewer",
       "Version": "1.1-3",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "R"
       ],
@@ -107,7 +108,7 @@
       "Package": "Rcpp",
       "Version": "1.0.12",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "methods",
         "utils"
@@ -118,7 +119,7 @@
       "Package": "V8",
       "Version": "4.4.2",
       "Source": "Repository",
-      "Repository": "BioCcontainers",
+      "Repository": "RSPM",
       "Requirements": [
         "Rcpp",
         "curl",
@@ -131,7 +132,7 @@
       "Package": "askpass",
       "Version": "1.2.0",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "sys"
       ],
@@ -141,7 +142,7 @@
       "Package": "base64enc",
       "Version": "0.1-3",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R"
       ],
@@ -151,7 +152,7 @@
       "Package": "bslib",
       "Version": "0.7.0",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "base64enc",
@@ -199,7 +200,7 @@
       "Package": "cli",
       "Version": "3.6.3",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "utils"
@@ -229,7 +230,7 @@
       "Package": "colorspace",
       "Version": "2.1-0",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "R",
         "grDevices",
@@ -243,7 +244,7 @@
       "Package": "cpp11",
       "Version": "0.4.7",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R"
       ],
@@ -253,7 +254,7 @@
       "Package": "curl",
       "Version": "5.2.1",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R"
       ],
@@ -263,7 +264,7 @@
       "Package": "desc",
       "Version": "1.4.3",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "R6",
@@ -276,12 +277,35 @@
       "Package": "digest",
       "Version": "0.6.36",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "utils"
       ],
       "Hash": "fd6824ad91ede64151e93af67df6376b"
+    },
+    "dplyr": {
+      "Package": "dplyr",
+      "Version": "1.1.4",
+      "Source": "Repository",
+      "Repository": "BioCcontainers",
+      "Requirements": [
+        "R",
+        "R6",
+        "cli",
+        "generics",
+        "glue",
+        "lifecycle",
+        "magrittr",
+        "methods",
+        "pillar",
+        "rlang",
+        "tibble",
+        "tidyselect",
+        "utils",
+        "vctrs"
+      ],
+      "Hash": "fedd9d00c2944ff00a0e2696ccf048ec"
     },
     "evaluate": {
       "Package": "evaluate",
@@ -298,7 +322,7 @@
       "Package": "fansi",
       "Version": "1.0.6",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "CRAN",
       "Requirements": [
         "R",
         "grDevices",
@@ -308,10 +332,10 @@
     },
     "farver": {
       "Package": "farver",
-      "Version": "2.1.1",
+      "Version": "2.1.2",
       "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "8106d78941f34855c440ddb946b8f7a5"
+      "Repository": "BioCcontainers",
+      "Hash": "680887028577f3fa2a81e410ed0d6e42"
     },
     "fastmap": {
       "Package": "fastmap",
@@ -324,7 +348,7 @@
       "Package": "fontawesome",
       "Version": "0.5.2",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "htmltools",
@@ -336,7 +360,7 @@
       "Package": "fs",
       "Version": "1.6.4",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "methods"
@@ -347,7 +371,7 @@
       "Package": "generics",
       "Version": "0.1.3",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "methods"
@@ -358,7 +382,7 @@
       "Package": "ggplot2",
       "Version": "3.5.1",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "MASS",
         "R",
@@ -383,7 +407,7 @@
       "Package": "gh",
       "Version": "1.4.1",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "cli",
@@ -401,7 +425,7 @@
       "Package": "gitcreds",
       "Version": "0.1.2",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R"
       ],
@@ -411,7 +435,7 @@
       "Package": "glue",
       "Version": "1.7.0",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "methods"
@@ -422,7 +446,7 @@
       "Package": "gtable",
       "Version": "0.3.5",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "R",
         "cli",
@@ -448,7 +472,7 @@
       "Package": "htmltools",
       "Version": "0.5.8.1",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "base64enc",
@@ -464,7 +488,7 @@
       "Package": "httr",
       "Version": "1.4.7",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "R6",
@@ -479,7 +503,7 @@
       "Package": "httr2",
       "Version": "1.0.1",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "R6",
@@ -500,14 +524,14 @@
       "Package": "ini",
       "Version": "0.3.1",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Hash": "6154ec2223172bce8162d4153cda21f7"
     },
     "isoband": {
       "Package": "isoband",
       "Version": "0.2.7",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "grid",
         "utils"
@@ -518,7 +542,7 @@
       "Package": "jquerylib",
       "Version": "0.1.4",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "htmltools"
       ],
@@ -528,7 +552,7 @@
       "Package": "jsonlite",
       "Version": "1.8.8",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "methods"
       ],
@@ -538,7 +562,7 @@
       "Package": "jsonvalidate",
       "Version": "1.3.2",
       "Source": "Repository",
-      "Repository": "BioCcontainers",
+      "Repository": "RSPM",
       "Requirements": [
         "V8"
       ],
@@ -564,7 +588,7 @@
       "Package": "labeling",
       "Version": "0.4.3",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "graphics",
         "stats"
@@ -575,7 +599,7 @@
       "Package": "later",
       "Version": "1.3.2",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "Rcpp",
         "rlang"
@@ -601,7 +625,7 @@
       "Package": "lifecycle",
       "Version": "1.0.4",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "cli",
@@ -614,7 +638,7 @@
       "Package": "lubridate",
       "Version": "1.9.3",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "generics",
@@ -627,7 +651,7 @@
       "Package": "magrittr",
       "Version": "2.0.3",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R"
       ],
@@ -637,7 +661,7 @@
       "Package": "memoise",
       "Version": "2.0.1",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "cachem",
         "rlang"
@@ -665,7 +689,7 @@
       "Package": "mime",
       "Version": "0.12",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "tools"
       ],
@@ -675,7 +699,7 @@
       "Package": "munsell",
       "Version": "0.5.1",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "colorspace",
         "methods"
@@ -710,7 +734,7 @@
       "Package": "piggyback",
       "Version": "0.1.5",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "cli",
         "fs",
@@ -727,7 +751,7 @@
       "Package": "pillar",
       "Version": "1.9.0",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "CRAN",
       "Requirements": [
         "cli",
         "fansi",
@@ -744,7 +768,7 @@
       "Package": "pkgconfig",
       "Version": "2.0.3",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "CRAN",
       "Requirements": [
         "utils"
       ],
@@ -754,7 +778,7 @@
       "Package": "processx",
       "Version": "3.8.4",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "R6",
@@ -800,7 +824,7 @@
       "Package": "quarto",
       "Version": "1.4",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "cli",
@@ -820,7 +844,7 @@
       "Package": "rappdirs",
       "Version": "0.3.3",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R"
       ],
@@ -840,7 +864,7 @@
       "Package": "rlang",
       "Version": "1.1.4",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "utils"
@@ -874,7 +898,7 @@
       "Package": "rprojroot",
       "Version": "2.0.4",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R"
       ],
@@ -884,14 +908,14 @@
       "Package": "rstudioapi",
       "Version": "0.16.0",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Hash": "96710351d642b70e8f02ddeb237c46a7"
     },
     "sass": {
       "Package": "sass",
       "Version": "0.4.9",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R6",
         "fs",
@@ -905,7 +929,7 @@
       "Package": "scales",
       "Version": "1.3.0",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "R",
         "R6",
@@ -925,14 +949,14 @@
       "Package": "sys",
       "Version": "3.4.2",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Hash": "3a1be13d68d47a8cd0bfd74739ca1555"
     },
     "tibble": {
       "Package": "tibble",
       "Version": "3.2.1",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "CRAN",
       "Requirements": [
         "R",
         "fansi",
@@ -947,11 +971,27 @@
       ],
       "Hash": "a84e2cc86d07289b3b6f5069df7a004c"
     },
+    "tidyselect": {
+      "Package": "tidyselect",
+      "Version": "1.2.1",
+      "Source": "Repository",
+      "Repository": "BioCcontainers",
+      "Requirements": [
+        "R",
+        "cli",
+        "glue",
+        "lifecycle",
+        "rlang",
+        "vctrs",
+        "withr"
+      ],
+      "Hash": "829f27b9c4919c16b593794a6344d6c0"
+    },
     "timechange": {
       "Package": "timechange",
       "Version": "0.3.0",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "cpp11"
@@ -972,7 +1012,7 @@
       "Package": "utf8",
       "Version": "1.2.4",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "CRAN",
       "Requirements": [
         "R"
       ],
@@ -982,7 +1022,7 @@
       "Package": "vctrs",
       "Version": "0.6.5",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "cli",
@@ -996,7 +1036,7 @@
       "Package": "viridisLite",
       "Version": "0.4.2",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "R"
       ],
@@ -1006,7 +1046,7 @@
       "Package": "withr",
       "Version": "3.0.0",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "grDevices",
