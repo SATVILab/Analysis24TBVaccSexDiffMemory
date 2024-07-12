@@ -1,6 +1,6 @@
 Package: Analysis24TBVaccSexDiffMemory
 Title: Assess if there are differences by sex in TB vaccine-induced immune responses
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: person("Miguel", "Rodo", , "miguel.rodo@uct.ac.za", role = c("aut", "cre"))
 Maintainer: Miguel Rodo <miguel.rodo@uct.ac.za>
 Description: Assess if there are differences by sex in TB vaccine-induced immune responses
