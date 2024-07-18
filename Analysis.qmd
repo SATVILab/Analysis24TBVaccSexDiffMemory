@@ -39,3 +39,122 @@ data_tidy_vacc_profile <- data_tidy_vacc_memory |>
 data_tidy_vacc_profile
 ```
 
+## EDA 
+```{r}
+library(dplyr)
+# Summary statistics for response magnitude by vaccine and sex 
+summary_stats <- data_tidy_vacc_summed |>
+  group_by(vaccine,sex) |>
+  summarise(
+    count = n(),
+    mean = mean(response),
+    sd = sd(response),
+    median = median(response),
+    min = min(response),
+    max = max(response))
+
+summary_stats
+```
+
+```{r}
+# Plot histogram of response magnitude grouped by vaccine and sex
+hist <- ggplot(data_tidy_vacc_summed, aes(x = response, fill = sex)) +
+  geom_histogram(binwidth = 1, color = "blue", position = "dodge") +
+  facet_grid(vaccine ~ sex) +
+  labs(title = "Histogram of Response Magnitudes by Vaccine and Sex", x = "Response Magnitude", y = "Frequency") +
+  theme_minimal()+
+  theme(
+    panel.background = element_rect(fill = "white"),
+    plot.background = element_rect(fill = "white"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(color = "black"))
+
+ggsave("histograms.png", hist)
+```
+
+```{r}
+# Boxplot of response magnitude by grouped vaccine and sex
+boxplot <- ggplot(data_tidy_vacc_summed, aes(x = vaccine, y = response, fill = sex)) +
+  geom_boxplot() +
+  facet_wrap(~ sex) +
+  labs(title = "Boxplot of Response Magnitudes by Vaccine and Sex", x = "Vaccine", y = "Response Magnitude") +
+  theme_minimal()+
+  theme(
+    panel.background = element_rect(fill = "white"),
+    plot.background = element_rect(fill = "white"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(color = "black"))
+
+ggsave("boxplots.png", boxplot)
+```
+
+## Kruskal-Wallis test 
+ - "used to determine if there are statistically significant differences between two or more groups of an independent variable on a continuous or ordinal dependent variable."
+
+```{r}
+# Kruskal-Wallis test group by vaccine and infection status
+kw_test <- data_tidy_vacc_summed |>
+  group_by(vaccine, infxn) |>
+  summarise(
+    test = list(kruskal.test(response ~ sex)),
+    .groups = 'drop') |>
+  mutate(
+    t_stat = sapply(test, function(x) x$statistic),
+    p_value = sapply(test, function(x) x$p.value))
+
+kw_test
+```
+
+```{r}
+# Summary stats after performing kruskal- wallis test
+summary_stats2 <- data_tidy_vacc_summed |>
+  group_by(vaccine,infxn, sex) |>
+  summarise(
+    count = n(),
+    mean = mean(response),
+    sd = sd(response),
+    median = median(response),
+    IQR = IQR(response))
+
+summary_stats2
+```
+
+```{r}
+# More Boxplots for all (vacc, infxn, sex) combinations 
+boxplot2 <- ggplot(data_tidy_vacc_summed, aes(x = sex, y = response, fill = sex)) +
+  geom_boxplot() +
+  facet_grid(vaccine ~ infxn) +
+  labs(title = "Boxplot of Response Magnitude by Vaccine and Infection Status", x = "Sex", y = "Response Magnitude") +
+  theme_minimal()+
+  theme(
+    panel.background = element_rect(fill = "white"),
+    plot.background = element_rect(fill = "white"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.line = element_line(color = "black"))
+
+ggsave("boxplot2.png", boxplot2)
+```
+
+## Betareg Model
+```{r}
+# Install and load package
+install.packages("betareg")
+library(betareg)
+```
+
+```{r}
+# Transform the response magnitude to range between 0 and 1
+data_tidy_vacc_summed$response <-pmin(pmax(data_tidy_vacc_summed$response, 0), 1)
+
+# fitting the model
+model <- betareg(response ~ vaccine + sex + infxn + subset, data_tidy_vacc_summed)
+summary(model)
+
+png("residuals_betareg.png")
+plot(model$residuals, main = "Residuals of the Betareg Model")
+dev.off()
+```
+
