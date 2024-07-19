@@ -24,7 +24,7 @@ Here we extract the memory response:
 
 ```{r}
 data_tidy_vacc_memory <- data_tidy_vacc_freq |>
-  vacc_extract_memory()
+  vacc_extract_memory() |> dplyr::filter(subset == "cd4")
 ```
 
 Now we calculate the summed response and the memory response:
@@ -141,20 +141,43 @@ ggsave("boxplot2.png", boxplot2)
 ## Betareg Model
 ```{r}
 # Install and load package
-install.packages("betareg")
+#install.packages("betareg")
 library(betareg)
+
+#install.packages("statmod")
+#install.packages("numDeriv")
 ```
 
 ```{r}
 # Transform the response magnitude to range between 0 and 1
 data_tidy_vacc_summed$response <-pmin(pmax(data_tidy_vacc_summed$response, 0), 1)
+data_tidy_vacc_summed$response <- sqrt(data_tidy_vacc_summed$response)
+```
 
-# fitting the model
-model <- betareg(response ~ vaccine + sex + infxn + subset, data_tidy_vacc_summed)
-summary(model)
+Model for infected 
+```{r}
+data_tidy_vacc_summed_inf <- data_tidy_vacc_summed |>  dplyr::filter(infxn == "infected") 
+model_inf_h1 <- betareg(response ~ sex, data = data_tidy_vacc_summed_inf |>    dplyr::filter(vaccine == "h1")) 
+model_inf_h56 <- betareg(response ~ sex, data = data_tidy_vacc_summed_inf |>    dplyr::filter(vaccine == "h56")) 
+model_inf_mva85a <- betareg(response ~ sex, data = data_tidy_vacc_summed_inf |>    dplyr::filter(vaccine == "mva85a"))
 
-png("residuals_betareg.png")
-plot(model$residuals, main = "Residuals of the Betareg Model")
+p_vec_inf <- c(
+  summary(model_inf_h1)$coefficients$mean[2, 4],
+  summary(model_inf_h56)$coefficients$mean[2, 4],
+  summary(model_inf_mva85a)$coefficients$mean[2, 4]
+)
+p_vec_inf
+
+p.adjust(p_vec_inf, method = "holm")
+```
+
+```{r}
+model_infected <- betareg(response ~ vaccine*sex, data_tidy_vacc_summed |> dplyr:: filter(infxn="infected"))
+summary(model_infected)
+
+png("residuals_inf.png")
+plot(model_infected$residuals, main = "Residuals of the infected Beta Regression Model")
 dev.off()
 ```
 
+# Fitting model for uninfected
