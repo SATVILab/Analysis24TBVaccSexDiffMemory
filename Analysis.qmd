@@ -20,22 +20,19 @@ library(DataTidy24TBVaccSexDiff)
 data("data_tidy_vacc_freq")
 ```
 
-Here we extract the memory response:
+Now we calculate the summed response and the profile response, and then extract the memory response:
 
 ```{r}
-data_tidy_vacc_memory <- data_tidy_vacc_freq |>
-  vacc_extract_memory()
-```
-
-Now we calculate the summed response and the memory response:
-
-```{r}
-data_tidy_vacc_summed <- data_tidy_vacc_memory |>
+data_tidy_vacc_summed <- data_tidy_vacc_freq |>
   vacc_calc_response_summed("response") |>
-  vacc_set_neg_to_zero("response")
+  vacc_calc_vaccine_induced_response("response") |>
+  vacc_set_neg_to_zero("response") |>
+  vacc_extract_memory()
 data_tidy_vacc_summed
-data_tidy_vacc_profile <- data_tidy_vacc_memory |>
-  vacc_calc_response_profile("response")
+data_tidy_vacc_profile <- data_tidy_vacc_freq |>
+  vacc_calc_response_profile("response") |>
+  vacc_calc_vaccine_induced_response("response") |>
+  vacc_extract_memory()
 data_tidy_vacc_profile
 ```
 
