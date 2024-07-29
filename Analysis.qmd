@@ -136,8 +136,8 @@ p_adjusted
 
 Taking the square root of the summed response:
 ```{r}
-data_tidy_vacc_summed <- data_tidy_vacc_summed |>
-  mutate(sqrt_response = sqrt(response))
+#data_tidy_vacc_summed <- data_tidy_vacc_summed |>
+  #mutate(sqrt_response = sqrt(response))
 ```
 
 ## Betareg Model
@@ -151,10 +151,10 @@ library(statmod)
 library(numDeriv)
 ```
 
-Transform the response magnitude to range between 0 and 1
+Transform the response magnitude to range between 0 and 1 and taking the sqrt
 ```{r}
 data_tidy_vacc_summed <- data_tidy_vacc_summed |>
-  mutate(prop_response = sqrt_response / 100)
+  mutate(prop_response = sqrt(response / 100))
 ```
 
 Fitting the Beta Regression model for infected: 
