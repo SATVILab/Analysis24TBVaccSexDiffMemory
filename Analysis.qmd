@@ -27,12 +27,14 @@ data_tidy_vacc_summed <- data_tidy_vacc_freq |>
   vacc_calc_response_summed("response") |>
   vacc_calc_vaccine_induced_response("response") |>
   vacc_set_neg_to_zero("response") |>
-  vacc_extract_memory()
+  vacc_extract_memory() |>
+  dplyr::filter(subset == "cd4")
 data_tidy_vacc_summed
 data_tidy_vacc_profile <- data_tidy_vacc_freq |>
   vacc_calc_response_profile("response") |>
   vacc_calc_vaccine_induced_response("response") |>
-  vacc_extract_memory()
+  vacc_extract_memory() |>
+  dplyr::filter(subset == "cd4")
 data_tidy_vacc_profile
 ```
 
