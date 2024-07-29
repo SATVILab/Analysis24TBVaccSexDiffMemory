@@ -38,22 +38,6 @@ data_tidy_vacc_profile
 
 ## EDA 
 ```{r}
-library(dplyr)
-# Summary statistics for response magnitude by vaccine and sex 
-summary_stats <- data_tidy_vacc_summed |>
-  group_by(vaccine,sex) |>
-  summarise(
-    count = n(),
-    mean = mean(response),
-    sd = sd(response),
-    median = median(response),
-    min = min(response),
-    max = max(response))
-
-summary_stats
-```
-
-```{r}
 # Plot histogram of response magnitude grouped by vaccine and sex
 hist <- ggplot(data_tidy_vacc_summed, aes(x = response, fill = sex)) +
   geom_histogram(binwidth = 1, color = "blue", position = "dodge") +
@@ -84,7 +68,7 @@ boxplot <- ggplot(data_tidy_vacc_summed, aes(x = vaccine, y = response, fill = s
     panel.grid.minor = element_blank(),
     axis.line = element_line(color = "black"))
 
-ggsave("boxplots.png", boxplot)
+ggsave("boxplot by vaccine and sex.png", boxplot)
 ```
 
 ## Kruskal-Wallis test 
@@ -106,7 +90,7 @@ kw_test
 
 ```{r}
 # Summary stats after performing kruskal- wallis test
-summary_stats2 <- data_tidy_vacc_summed |>
+summary_stats <- data_tidy_vacc_summed |>
   group_by(vaccine,infxn, sex) |>
   summarise(
     count = n(),
@@ -115,15 +99,15 @@ summary_stats2 <- data_tidy_vacc_summed |>
     median = median(response),
     IQR = IQR(response))
 
-summary_stats2
+summary_stats
 ```
 
+## Analysis
 ```{r}
-# More Boxplots for all (vacc, infxn, sex) combinations 
 boxplot2 <- ggplot(data_tidy_vacc_summed, aes(x = sex, y = response, fill = sex)) +
   geom_boxplot() +
   facet_grid(vaccine ~ infxn) +
-  labs(title = "Boxplot of Response Magnitude by Vaccine and Infection Status", x = "Sex", y = "Response Magnitude") +
+  labs(title = "Boxplot of Response Magnitude by Infection Status and Sex", x = "Sex", y = "Response Magnitude") +
   theme_minimal()+
   theme(
     panel.background = element_rect(fill = "white"),
@@ -132,49 +116,68 @@ boxplot2 <- ggplot(data_tidy_vacc_summed, aes(x = sex, y = response, fill = sex)
     panel.grid.minor = element_blank(),
     axis.line = element_line(color = "black"))
 
-ggsave("boxplot2.png", boxplot2)
+ggsave("boxplot by infection status and sex.png", boxplot2)
+```
+
+# Mann- Whitney Test with multiple testing error rate correction
+
+```{r}
+mw_test <- list(
+  infxn = wilcox.test(response ~ infxn, data = data_tidy_vacc_summed),
+  sex = wilcox.test(response ~ sex, data = data_tidy_vacc_summed)
+)
+p_values <- sapply(mw_test, function(test) test$p.value)
+p_values
+p_adjusted <- p.adjust(p_values, method = "holm")
+p_adjusted
+```
+
+Taking the square root of the summed response:
+```{r}
+data_tidy_vacc_summed <- data_tidy_vacc_summed |>
+  mutate(sqrt_response = sqrt(response))
 ```
 
 ## Betareg Model
 ```{r}
 # Install and load package
 #install.packages("betareg")
-library(betareg)
-
 #install.packages("statmod")
 #install.packages("numDeriv")
+library(betareg)
+library(statmod)
+library(numDeriv)
 ```
 
+Transform the response magnitude to range between 0 and 1
 ```{r}
-# Transform the response magnitude to range between 0 and 1
-data_tidy_vacc_summed$response <-pmin(pmax(data_tidy_vacc_summed$response, 0), 1)
-data_tidy_vacc_summed$response <- sqrt(data_tidy_vacc_summed$response)
+data_tidy_vacc_summed <- data_tidy_vacc_summed |>
+  mutate(prop_response = sqrt_response / 100)
 ```
 
-Model for infected 
+Fitting the Beta Regression model for infected: 
 ```{r}
-data_tidy_vacc_summed_inf <- data_tidy_vacc_summed |>  dplyr::filter(infxn == "infected") 
-model_inf_h1 <- betareg(response ~ sex, data = data_tidy_vacc_summed_inf |>    dplyr::filter(vaccine == "h1")) 
-model_inf_h56 <- betareg(response ~ sex, data = data_tidy_vacc_summed_inf |>    dplyr::filter(vaccine == "h56")) 
-model_inf_mva85a <- betareg(response ~ sex, data = data_tidy_vacc_summed_inf |>    dplyr::filter(vaccine == "mva85a"))
-
-p_vec_inf <- c(
-  summary(model_inf_h1)$coefficients$mean[2, 4],
-  summary(model_inf_h56)$coefficients$mean[2, 4],
-  summary(model_inf_mva85a)$coefficients$mean[2, 4]
-)
-p_vec_inf
-
-p.adjust(p_vec_inf, method = "holm")
-```
-
-```{r}
-model_infected <- betareg(response ~ vaccine*sex, data_tidy_vacc_summed |> dplyr:: filter(infxn="infected"))
+model_infected <- betareg(prop_response ~ vaccine*sex, data_tidy_vacc_summed |> dplyr::filter(infxn =="infected"))
 summary(model_infected)
 
-png("residuals_inf.png")
+# Plotting the residuals for infected
+png("residuals_infected.png")
 plot(model_infected$residuals, main = "Residuals of the infected Beta Regression Model")
+abline(h= 0, col= "red", lwd= 2)
 dev.off()
 ```
 
-# Fitting model for uninfected
+
+Fitting the Beta Regression model for uninfected: 
+```{r}
+model_uninfected <- betareg(prop_response ~ vaccine*sex, data_tidy_vacc_summed|> dplyr::filter(infxn == "uninfected"))
+summary(model_uninfected)
+
+# Plotting Residuals for uninfected
+png("residuals_uninfected.png")
+plot(model_uninfected$residuals, main = "Residuals of the uninfected Beta Regression Model")
+abline (h=0, col = "red", lwd= 2)
+dev.off()
+```
+
+
