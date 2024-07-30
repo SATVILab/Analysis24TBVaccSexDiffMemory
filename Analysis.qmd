@@ -9,6 +9,7 @@ format:
 #| include: false
 library(ggplot2)
 library(tibble)
+library(dplyr)
 ```
 
 ## Data prep
@@ -142,10 +143,10 @@ Taking the square root of the summed response:
 
 ## Betareg Model
 ```{r}
-# Install and load package
-#install.packages("betareg")
-#install.packages("statmod")
-#install.packages("numDeriv")
+ Install and load package
+install.packages("betareg")
+install.packages("statmod")
+install.packages("numDeriv")
 library(betareg)
 library(statmod)
 library(numDeriv)
@@ -183,3 +184,51 @@ dev.off()
 ```
 
 
+## Performing Simulataneous Hypothesis tests
+Loading the required packages for the simulataneous test:
+```{r}
+pkg_vec <- c("betareg", "car", "lmtest")
+for (x in pkg_vec) {
+  if (!requireNamespace(x, quietly = TRUE)) {
+    renv::install(x, prompt = FALSE)
+  }
+}
+library(betareg)
+library(car)
+library(lmtest)
+```
+
+Performing the simulatenous test for infected: 
+```{r}
+full_model_infected <- betareg(prop_response ~ vaccine*sex, data = data_tidy_vacc_summed|>
+ dplyr::filter(infxn == "infected"))
+
+null_model_infected <- betareg(prop_response ~ 1, data = data_tidy_vacc_summed|>
+ dplyr::filter(infxn == "infected") )
+summary(full_model_infected)
+
+# Wald test
+car::linearHypothesis(full_model_infected,
+ c("vaccineh56 = 0", "vaccinemva85a = 0", "sexmale= 0", "vaccineh56:sexmale=0", "vaccinemva85a:sexmale= 0"))
+
+# likelihood ratio test:
+lmtest::lrtest(full_model_infected, null_model_infected)
+```
+
+
+ Performing the simulateneous test for uninfected:
+```{r}
+full_model_uninfected <- betareg(prop_response ~ vaccine*sex, data = data_tidy_vacc_summed|>
+ dplyr::filter(infxn == "uninfected"))
+
+null_model_uninfected <- betareg(prop_response ~ 1, data = data_tidy_vacc_summed|>
+ dplyr::filter(infxn == "uninfected"))
+summary(full_model_uninfected)
+
+# Wald test
+car::linearHypothesis(full_model_uninfected,
+ c("vaccineh56 = 0", "vaccinemva85a = 0", "sexmale= 0", "vaccineh56:sexmale=0", "vaccinemva85a:sexmale= 0"))
+
+# likelihood ratio test:
+lmtest::lrtest(full_model_uninfected, null_model_uninfected)
+```
