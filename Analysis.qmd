@@ -39,7 +39,8 @@ data_tidy_vacc_profile <- data_tidy_vacc_freq |>
 data_tidy_vacc_profile
 ```
 
-## EDA 
+## Respose Magnitude
+### EDA 
 ```{r}
 # Plot histogram of response magnitude grouped by vaccine and sex
 hist <- ggplot(data_tidy_vacc_summed, aes(x = response, fill = sex)) +
@@ -74,7 +75,7 @@ boxplot <- ggplot(data_tidy_vacc_summed, aes(x = vaccine, y = response, fill = s
 ggsave("boxplot by vaccine and sex.png", boxplot)
 ```
 
-## Kruskal-Wallis test 
+### Kruskal-Wallis test 
  - "used to determine if there are statistically significant differences between two or more groups of an independent variable on a continuous or ordinal dependent variable."
 
 ```{r}
@@ -105,7 +106,7 @@ summary_stats <- data_tidy_vacc_summed |>
 summary_stats
 ```
 
-## Analysis
+### Analysis
 ```{r}
 boxplot2 <- ggplot(data_tidy_vacc_summed, aes(x = sex, y = response, fill = sex)) +
   geom_boxplot() +
@@ -122,7 +123,7 @@ boxplot2 <- ggplot(data_tidy_vacc_summed, aes(x = sex, y = response, fill = sex)
 ggsave("boxplot by infection status and sex.png", boxplot2)
 ```
 
-# Mann- Whitney Test with multiple testing error rate correction
+Mann- Whitney Test with multiple testing error rate correction:
 
 ```{r}
 mw_test <- list(
@@ -141,7 +142,7 @@ Taking the square root of the summed response:
   #mutate(sqrt_response = sqrt(response))
 ```
 
-## Betareg Model
+### Betareg Model
 ```{r}
  Install and load package
 install.packages("betareg")
@@ -170,7 +171,6 @@ abline(h= 0, col= "red", lwd= 2)
 dev.off()
 ```
 
-
 Fitting the Beta Regression model for uninfected: 
 ```{r}
 model_uninfected <- betareg(prop_response ~ vaccine*sex, data_tidy_vacc_summed|> dplyr::filter(infxn == "uninfected"))
@@ -184,7 +184,7 @@ dev.off()
 ```
 
 
-## Performing Simulataneous Hypothesis tests
+### Performing Simultaneous Hypothesis tests
 Loading the required packages for the simulataneous test:
 ```{r}
 pkg_vec <- c("betareg", "car", "lmtest")
@@ -203,32 +203,63 @@ Performing the simulatenous test for infected:
 full_model_infected <- betareg(prop_response ~ vaccine*sex, data = data_tidy_vacc_summed|>
  dplyr::filter(infxn == "infected"))
 
-null_model_infected <- betareg(prop_response ~ 1, data = data_tidy_vacc_summed|>
+null_model_infected <- betareg(prop_response ~ vaccine, data = data_tidy_vacc_summed|>
  dplyr::filter(infxn == "infected") )
+
 summary(full_model_infected)
 
-# Wald test
-car::linearHypothesis(full_model_infected,
+# Wald test:
+wald_infected <- car::linearHypothesis(full_model_infected,
  c("vaccineh56 = 0", "vaccinemva85a = 0", "sexmale= 0", "vaccineh56:sexmale=0", "vaccinemva85a:sexmale= 0"))
 
-# likelihood ratio test:
-lmtest::lrtest(full_model_infected, null_model_infected)
-```
+# Likelihood ratio test:
+likelihood_infected <- lmtest::lrtest(full_model_infected, null_model_infected)
 
+# p-values from the wald and likelihood test infected
+p_vec_infected <- c(wald_infected$"Pr(>F)"[2], likelihood_infected$"Pr(>Chi)"[2])
+```
 
  Performing the simulateneous test for uninfected:
 ```{r}
 full_model_uninfected <- betareg(prop_response ~ vaccine*sex, data = data_tidy_vacc_summed|>
  dplyr::filter(infxn == "uninfected"))
 
-null_model_uninfected <- betareg(prop_response ~ 1, data = data_tidy_vacc_summed|>
+null_model_uninfected <- betareg(prop_response ~ vaccine, data = data_tidy_vacc_summed|>
  dplyr::filter(infxn == "uninfected"))
 summary(full_model_uninfected)
 
-# Wald test
-car::linearHypothesis(full_model_uninfected,
+# Wald test: 
+wald_uninfected <- car::linearHypothesis(full_model_uninfected,
  c("vaccineh56 = 0", "vaccinemva85a = 0", "sexmale= 0", "vaccineh56:sexmale=0", "vaccinemva85a:sexmale= 0"))
 
-# likelihood ratio test:
-lmtest::lrtest(full_model_uninfected, null_model_uninfected)
+# Likelihood ratio test:
+likelihood_ratio_uninfected <- lmtest::lrtest(full_model_uninfected, null_model_uninfected)
+
+# p-values from the wald and likelihood test uninfected
+p_values_simHypo_uninfected <- c()
+```
+
+## Response Profile
+```{r}
+cyt_data <- data_tidy_vacc_profile |> 
+  select(cyt_combn)
+unique_cyt<- cyt_data |>
+  distinct()
+num_unique <- nrow(unique_cyt) # There are 7 cyt_combn
+```
+
+```{r}
+data_tidy_vacc_profile <- data_tidy_vacc_profile |>
+  mutate(cyt_assign = as.numeric(as.factor(data_tidy_vacc_profile$cyt_combn)))
+
+data_tidy_vacc_profile <- data_tidy_vacc_profile |>
+   mutate(vaccine_assign = as.numeric(as.factor(data_tidy_vacc_profile$vaccine)))
+
+
+pca_results <- prcomp(data_tidy_vacc_profile[,c(10,11)], scale.= TRUE)
+
+png("pca biplot.png")
+biplot(pca_results, data = data_tidy_vacc_profile,
+   colour = 'vaccine_assign', label = TRUE, frame = TRUE)
+dev.off()  
 ```
