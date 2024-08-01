@@ -169,6 +169,28 @@ png("residuals_infected.png")
 plot(model_infected$residuals, main = "Residuals of the infected Beta Regression Model")
 abline(h= 0, col= "red", lwd= 2)
 dev.off()
+
+# Betareg model for each vaccine and p-values
+data_tidy_vacc_summed_inf <- data_tidy_vacc_summed |>  
+    dplyr::filter(infxn == "infected") 
+
+beta_h1_inf <- betareg(prop_response ~ sex, data = data_tidy_vacc_summed_inf |>
+    dplyr::filter(vaccine == "h1")) 
+
+beta_h56_inf <- betareg(prop_response ~ sex, data = data_tidy_vacc_summed_inf |> 
+   dplyr::filter(vaccine == "h56")) 
+
+beta_mva85a_inf <- betareg(prop_response ~ sex, data = data_tidy_vacc_summed_inf |> 
+   dplyr::filter(vaccine == "mva85a"))
+
+p_vec_vaccine_inf <- c(
+  summary(beta_h1_inf)$coefficients$mu[2, 4],
+  summary(beta_h56_inf)$coefficients$mu[2, 4],
+  summary(beta_mva85a_inf)$coefficients$mean[2, 4]
+)
+p_vec_vaccine_inf
+
+p.adjust(p_vec_vaccine_inf, method = "holm")
 ```
 
 Fitting the Beta Regression model for uninfected: 
@@ -181,18 +203,40 @@ png("residuals_uninfected.png")
 plot(model_uninfected$residuals, main = "Residuals of the uninfected Beta Regression Model")
 abline (h=0, col = "red", lwd= 2)
 dev.off()
+
+# Betareg models for each vaccine and p-values
+data_tidy_vacc_summed_uninf <- data_tidy_vacc_summed |>  
+    dplyr::filter(infxn == "uninfected") 
+
+beta_h1_uninf <- betareg(prop_response ~ sex, data = data_tidy_vacc_summed_uninf |>
+    dplyr::filter(vaccine == "h1")) 
+
+beta_h56_uninf <- betareg(prop_response ~ sex, data = data_tidy_vacc_summed_uninf |> 
+   dplyr::filter(vaccine == "h56")) 
+
+beta_mva85a_uninf <- betareg(prop_response ~ sex, data = data_tidy_vacc_summed_uninf |> 
+   dplyr::filter(vaccine == "mva85a"))
+
+p_vec_vaccine_uninf <- c(
+  summary(beta_h1_uninf)$coefficients$mu[2, 4],
+  summary(beta_h56_uninf)$coefficients$mu[2, 4],
+  summary(beta_mva85a_uninf)$coefficients$mean[2, 4]
+)
+p_vec_vaccine_uninf
+
+p.adjust(p_vec_vaccine_uninf, method = "holm")
 ```
 
 
 ### Performing Simultaneous Hypothesis tests
 Loading the required packages for the simulataneous test:
 ```{r}
-pkg_vec <- c("betareg", "car", "lmtest")
-for (x in pkg_vec) {
-  if (!requireNamespace(x, quietly = TRUE)) {
-    renv::install(x, prompt = FALSE)
-  }
-}
+#pkg_vec <- c("betareg", "car", "lmtest")
+#for (x in pkg_vec) {
+#  if (!requireNamespace(x, quietly = TRUE)) {
+#    renv::install(x, prompt = FALSE)
+#  }
+#}
 library(betareg)
 library(car)
 library(lmtest)
@@ -207,16 +251,24 @@ null_model_infected <- betareg(prop_response ~ vaccine, data = data_tidy_vacc_su
  dplyr::filter(infxn == "infected") )
 
 summary(full_model_infected)
+summary(null_model_infected)
+
+# p-values
+p_vec_full.null_inf <- c(
+  summary(full_model_infected)$coefficients$mu[-1, "Pr(>|z|)"],
+  summary(null_model_infected)$coefficients$mu[-1, "Pr(>|z|)"])
+
+p_vec_full.null_inf
+
+p.adjust(p_vec_full.null_inf, method = "holm")
 
 # Wald test:
 wald_infected <- car::linearHypothesis(full_model_infected,
- c("vaccineh56 = 0", "vaccinemva85a = 0", "sexmale= 0", "vaccineh56:sexmale=0", "vaccinemva85a:sexmale= 0"))
+ c("sexmale= 0", "vaccineh56:sexmale=0", "vaccinemva85a:sexmale= 0"))
 
 # Likelihood ratio test:
 likelihood_infected <- lmtest::lrtest(full_model_infected, null_model_infected)
 
-# p-values from the wald and likelihood test infected
-p_vec_infected <- c(wald_infected$"Pr(>F)"[2], likelihood_infected$"Pr(>Chi)"[2])
 ```
 
  Performing the simulateneous test for uninfected:
@@ -226,17 +278,25 @@ full_model_uninfected <- betareg(prop_response ~ vaccine*sex, data = data_tidy_v
 
 null_model_uninfected <- betareg(prop_response ~ vaccine, data = data_tidy_vacc_summed|>
  dplyr::filter(infxn == "uninfected"))
+
 summary(full_model_uninfected)
+summary(null_model_uninfected)
+
+# p-values
+p_vec_full.null_uninf <- c(
+  summary(full_model_uninfected)$coefficients$mu[-1, "Pr(>|z|)"],
+  summary(null_model_uninfected)$coefficients$mu[-1, "Pr(>|z|)"])
+
+p_vec_full.null_uninf
+
+p.adjust(p_vec_full.null_uninf, method = "holm")
 
 # Wald test: 
 wald_uninfected <- car::linearHypothesis(full_model_uninfected,
- c("vaccineh56 = 0", "vaccinemva85a = 0", "sexmale= 0", "vaccineh56:sexmale=0", "vaccinemva85a:sexmale= 0"))
+ c("sexmale= 0", "vaccineh56:sexmale=0", "vaccinemva85a:sexmale= 0"))
 
 # Likelihood ratio test:
 likelihood_ratio_uninfected <- lmtest::lrtest(full_model_uninfected, null_model_uninfected)
-
-# p-values from the wald and likelihood test uninfected
-p_values_simHypo_uninfected <- c()
 ```
 
 ## Response Profile
@@ -254,12 +314,5 @@ data_tidy_vacc_profile <- data_tidy_vacc_profile |>
 
 data_tidy_vacc_profile <- data_tidy_vacc_profile |>
    mutate(vaccine_assign = as.numeric(as.factor(data_tidy_vacc_profile$vaccine)))
-
-
-pca_results <- prcomp(data_tidy_vacc_profile[,c(10,11)], scale.= TRUE)
-
-png("pca biplot.png")
-biplot(pca_results, data = data_tidy_vacc_profile,
-   colour = 'vaccine_assign', label = TRUE, frame = TRUE)
-dev.off()  
+   
 ```
