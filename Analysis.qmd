@@ -269,6 +269,11 @@ wald_infected <- car::linearHypothesis(full_model_infected,
 # Likelihood ratio test:
 likelihood_infected <- lmtest::lrtest(full_model_infected, null_model_infected)
 
+# p-values Wald and LR test
+p_vec_wald.lr_inf <- c(wald_infected$`Pr(>Chisq)`[2],likelihood_infected$`Pr(>Chisq)`[2])
+p_vec_wald.lr_inf
+
+p.adjust(p_vec_wald.lr_inf, method = "holm")
 ```
 
  Performing the simulateneous test for uninfected:
@@ -296,7 +301,13 @@ wald_uninfected <- car::linearHypothesis(full_model_uninfected,
  c("sexmale= 0", "vaccineh56:sexmale=0", "vaccinemva85a:sexmale= 0"))
 
 # Likelihood ratio test:
-likelihood_ratio_uninfected <- lmtest::lrtest(full_model_uninfected, null_model_uninfected)
+likelihood_uninfected <- lmtest::lrtest(full_model_uninfected, null_model_uninfected)
+
+# p-values Wald and LR test
+p_vec_wald.lr_uninf <- c(wald_uninfected$`Pr(>Chisq)`[2],likelihood_uninfected$`Pr(>Chisq)`[2])
+p_vec_wald.lr_uninf
+
+p.adjust(p_vec_wald.lr_uninf, method = "holm")
 ```
 
 ## Response Profile
