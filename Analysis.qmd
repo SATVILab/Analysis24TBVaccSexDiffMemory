@@ -403,7 +403,7 @@ pca_plot2 <- ggplot(pca_data, aes(x = PC1, y = PC2, color = vaccine, shape = sex
             inherit.aes = FALSE) +
   geom_point(size = 3) +          
   geom_point(data = mean_positions, aes(x = PC1, y = PC2), shape=1,fill=NA,
-             size = 4, color = "black",stroke=1.5) +
+             size = 4, color = "orange",stroke=1.5) +
   ggrepel::geom_text_repel(data = mean_positions, aes(x = PC1, y = PC2, label = combo), 
             nudge_x = 1, nudge_y = 0.5, vjust = 1, hjust = 1, color = "black") +
   theme_minimal()+
