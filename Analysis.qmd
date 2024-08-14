@@ -75,6 +75,30 @@ boxplot <- ggplot(data_tidy_vacc_summed, aes(x = vaccine, y = response, fill = s
 ggsave("boxplot by vaccine and sex.png", boxplot)
 ```
 
+```{r}
+boxplot_slides<- ggplot(data_tidy_vacc_summed, aes(x = sex, y = response, fill = sex)) +
+  geom_boxplot() +
+  facet_grid(vaccine ~ infxn,labeller = labeller(vaccine = toupper)) +
+  labs(title = "Summed Response by Sex and Infection Status", x = "Sex", y = "Summed Response") +
+  theme(
+    axis.text.x = element_blank(),        # Remove x-axis text
+    axis.ticks.x = element_blank(),       # Remove x-axis ticks
+    panel.grid.major.x = element_blank(), # Optionally remove major x-axis grid lines
+    panel.grid.minor.x = element_blank(), # Optionally remove minor x-axis grid lines
+    legend.position = 'bottom',
+     strip.text = element_text(size = 12,  # Adjust facet label size
+    face = "bold"),
+    axis.text.y = element_text(size = 13,   # Adjust y-axis title size
+    face = "bold"),
+    legend.text = element_text(size = 12) ) + # Set y-axis title font style             # Place legend at the bottom                   
+      
+  guides(fill = guide_legend(title = NULL))
+
+# Save the plot
+ggsave("Boxplot for slides.png",boxplot_slides)
+```
+
+
 ### Kruskal-Wallis test 
  - "used to determine if there are statistically significant differences between two or more groups of an independent variable on a continuous or ordinal dependent variable."
 
