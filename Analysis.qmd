@@ -181,6 +181,14 @@ model_infected <- betareg(prop_response ~ vaccine*sex,
 
 summary(model_infected)
 
+model_infected <- betareg(
+  prop_response ~ vaccine*sex,
+  data_tidy_vacc_summed |> 
+    dplyr::filter(infxn =="infected") |>
+    dplyr::mutate(vaccine = factor(.data$vaccine, levels = c("h56", "h1", "mva85a"))))
+
+summary(model_infected)
+
 # Plotting the residuals for infected
 png("residuals_infected.png")
 plot(model_infected$residuals, main = "Residuals of the infected Beta Regression Model")
