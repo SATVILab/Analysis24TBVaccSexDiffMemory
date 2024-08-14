@@ -60,14 +60,7 @@ hist <- ggplot(data_tidy_vacc_summed, aes(x = response, fill = sex)) +
   geom_histogram(binwidth = 1, color = "blue", position = "dodge") +
   facet_grid(vaccine ~ sex) +
   labs(title = "Histogram of Response Magnitudes by Vaccine and Sex", x = "Response Magnitude", y = "Frequency") +
-  theme_minimal()+
-  theme(
-    panel.background = element_rect(fill = "white"),
-    plot.background = element_rect(fill = "white"),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    axis.line = element_line(color = "black"))
-
+  theme_cowplot_bg()
 ggsave("histograms.png", hist)
 ```
 
@@ -77,13 +70,7 @@ boxplot <- ggplot(data_tidy_vacc_summed, aes(x = vaccine, y = response, fill = s
   geom_boxplot() +
   facet_wrap(~ sex) +
   labs(title = "Boxplot of Response Magnitudes by Vaccine and Sex", x = "Vaccine", y = "Response Magnitude") +
-  theme_minimal()+
-  theme(
-    panel.background = element_rect(fill = "white"),
-    plot.background = element_rect(fill = "white"),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    axis.line = element_line(color = "black"))
+  theme_cowplot_bg()
 
 ggsave("boxplot by vaccine and sex.png", boxplot)
 ```
@@ -125,13 +112,7 @@ boxplot2 <- ggplot(data_tidy_vacc_summed, aes(x = sex, y = response, fill = sex)
   geom_boxplot() +
   facet_grid(vaccine ~ infxn) +
   labs(title = "Boxplot of Response Magnitude by Infection Status and Sex", x = "Sex", y = "Response Magnitude") +
-  theme_minimal()+
-  theme(
-    panel.background = element_rect(fill = "white"),
-    plot.background = element_rect(fill = "white"),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    axis.line = element_line(color = "black"))
+  theme_cowplot_bg()
 
 ggsave("boxplot by infection status and sex.png", boxplot2)
 ```
@@ -332,20 +313,14 @@ rp_box1 <- ggplot(data_tidy_vacc_profile, aes(x = sex, y = response, fill = sex)
   labs(title = "Response by Sex and Infection Status for each Cytokine Combination",
        x = "Sex",
        y = "Response") +
-  theme_minimal()+
-  theme(
-    panel.background = element_rect(fill = "white"),
-    plot.background = element_rect(fill = "white"),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    axis.line = element_line(color = "black"))     
-  
-  
+  theme_cowplot_bg()   
+   
 ggsave('Profile by cytokine combination.png',rp_box1)
 
  #subset boxplot filtering 2 vaccines
 selected_vaccines <- c('h1', 'mva85a')
 
+# Selected 2 vaccines project slides
 # Filter the dataset
 filtered_data <- data_tidy_vacc_profile %>%
   filter(vaccine %in% selected_vaccines)
@@ -399,13 +374,7 @@ pca_plot1 <- ggplot(pca_data, aes(x = PC1, y = PC2, color = vaccine, shape = sex
   geom_segment(data = scaled_loadings, aes(x = 0, y = 0, xend = PC1, yend = PC2), 
                arrow = arrow(length = unit(0.3, "cm")), color = "black", inherit.aes = FALSE) +
   geom_text(data = scaled_loadings, aes(x = PC1, y = PC2, label = cyt_combn), nudge_x = 1.5, nudge_y = 0.4, vjust = 1, hjust = 1, color = "black", inherit.aes = FALSE) +
-  theme_minimal()+
-  theme(
-    panel.background = element_rect(fill = "white"),
-    plot.background = element_rect(fill = "white"),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    axis.line = element_line(color = "black"))     
+  theme_cowplot_bg()
 
 ggsave('PCA_Biplot.png', pca_plot1, width = 12, height = 6)
 ```
@@ -432,13 +401,7 @@ pca_plot2 <- ggplot(pca_data, aes(x = PC1, y = PC2, color = vaccine, shape = sex
              size = 4, color = "orange",stroke=1.5) +
   ggrepel::geom_text_repel(data = mean_positions, aes(x = PC1, y = PC2, label = combo), 
             nudge_x = 1, nudge_y = 0.5, vjust = 1, hjust = 1, color = "black") +
-  theme_minimal()+
-  theme(
-    panel.background = element_rect(fill = "white"),
-    plot.background = element_rect(fill = "white"),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    axis.line = element_line(color = "black"))     
+  theme_cowplot_bg()
 
 ggsave('pca_ mean position.png', pca_plot2, width = 14, height = 6)
 ```
