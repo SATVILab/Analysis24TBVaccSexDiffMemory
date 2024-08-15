@@ -10,6 +10,7 @@ format:
 library(ggplot2)
 library(tibble)
 library(dplyr)
+library(cowplot)
 theme_cowplot_bg <- function() {
   theme_cowplot() +
   theme(
@@ -141,6 +142,30 @@ boxplot2 <- ggplot(data_tidy_vacc_summed, aes(x = sex, y = response, fill = sex)
 ggsave("boxplot by infection status and sex.png", boxplot2)
 ```
 
+```{r}
+boxplot3 <- ggplot(data_tidy_vacc_summed, aes(x = sex, y = response, fill = sex)) +
+  geom_boxplot() +
+  facet_grid(vaccine ~ infxn,labeller = labeller(vaccine = toupper)) +
+  labs(title = "Summed Response by Sex and Infection Status", x = "Sex", y = "Summed Response") +
+  theme_cowplot_bg()+
+  theme(
+    axis.text.x = element_blank(),        # Remove x-axis text
+    axis.ticks.x = element_blank(),       # Remove x-axis ticks
+    panel.grid.major.x = element_blank(), # Optionally remove major x-axis grid lines
+    panel.grid.minor.x = element_blank(), # Optionally remove minor x-axis grid lines
+    legend.position = 'bottom',
+     strip.text = element_text(size = 12,  # Adjust facet label size
+    face = "bold"),
+    axis.text.y = element_text(size = 13,   # Adjust y-axis title size
+    face = "bold"),
+    legend.text = element_text(size = 12) ) + # Set y-axis title font style             # Place legend at the bottom                   
+    background_grid(major='y')+
+  guides(fill = guide_legend(title = NULL))
+
+# Save the plot
+ggsave("Boxplot summed response slides.png",boxplot3)
+```
+
 Mann- Whitney Test with multiple testing error rate correction:
 
 ```{r}
@@ -177,7 +202,7 @@ mw_tbl_summed
 
 Taking the square root of the summed response:
 ```{r}
->>#data_tidy_vacc_summed <- data_tidy_vacc_summed |>
+#data_tidy_vacc_summed <- data_tidy_vacc_summed |>
   #mutate(sqrt_response = sqrt(response))
 ```
 
@@ -215,7 +240,7 @@ summary(model_infected)
 
 # Plotting the residuals for infected
 png("residuals_infected.png")
-plot(model_infected$residuals, main = "Residuals of the infected Beta Regression Model")
+plot(model_infected$residuals, main = "Residuals for Infected ", ylab= "Residuals", xlab = " Index")
 abline(h= 0, col= "red", lwd= 2)
 dev.off()
 
@@ -245,11 +270,18 @@ p.adjust(p_vec_vaccine_inf, method = "holm")
 Fitting the Beta Regression model for uninfected: 
 ```{r}
 model_uninfected <- betareg(prop_response ~ vaccine*sex, data_tidy_vacc_summed|> dplyr::filter(infxn == "uninfected"))
+
+model_uninfected <- betareg(
+  prop_response ~ vaccine*sex,
+  data_tidy_vacc_summed |> 
+    dplyr::filter(infxn =="uninfected") |>
+    dplyr::mutate(vaccine = factor(.data$vaccine, levels = c("h56", "h1", "mva85a"))))
+
 summary(model_uninfected)
 
 # Plotting Residuals for uninfected
 png("residuals_uninfected.png")
-plot(model_uninfected$residuals, main = "Residuals of the uninfected Beta Regression Model")
+plot(model_uninfected$residuals, main = "Residuals for uninfected ", ylab= "Residuals", xlab = "Index")
 abline (h=0, col = "red", lwd= 2)
 dev.off()
 
@@ -383,14 +415,19 @@ filtered_data <- data_tidy_vacc_profile %>%
 profile_2 <- ggplot(filtered_data, aes(x = sex, y = response, fill = sex)) +
   geom_boxplot() +
   facet_grid(vaccine + infxn ~ cyt_combn, scales = "free") +
+  #facet_grid(vaccine ~ infxn,labeller = labeller(vaccine = toupper)) +
   labs(title = "Response by Sex and Infection Status for each Cytokine Combination",
        x = "Sex",
        y = "Response") +
   theme_cowplot_bg() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))      
+  theme(axis.text.x = element_blank(),        # Remove x-axis text
+    axis.ticks.x = element_blank(),
+    legend.position = 'bottom')+   
+  background_grid(major='y')+
+  guides(fill = guide_legend(title = NULL))   
 
 ggsave('Profile boxplot 2.png',profile_2)  
- 
+
 ```
 
 ### PCA Biplot
