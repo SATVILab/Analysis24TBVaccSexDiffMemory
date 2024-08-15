@@ -393,6 +393,12 @@ p.adjust(p_vec_wald.lr_uninf, method = "holm")
 
 ## Response Profile
 Boxplot of response profile:
+
+```{r}
+knitr::kable(data_tidy_vacc_freq|>dplyr::filter(ptid=='mva85a-tb008-5' & subset=='cd4'& timepoint=="168"))
+knitr::kable(data_tidy_vacc_profile|>dplyr::filter(ptid=='mva85a-tb008-5'))
+```
+
 ```{r}
 rp_box1 <- ggplot(data_tidy_vacc_profile, aes(x = sex, y = response, fill = sex)) +
   geom_boxplot() +
