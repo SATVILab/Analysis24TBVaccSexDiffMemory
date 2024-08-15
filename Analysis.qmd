@@ -531,6 +531,6 @@ pca_plot3 <- ggplot(pca_data|>dplyr::filter(infxn=='infected'), aes(x = PC1, y =
     axis.ticks.x = element_blank())
 
 
-ggsave('pca_mean_position2.png', pca_plot3, width = 14, height = 6)
+ggsave('pca_mean_position2.png', pca_plot3, width= 10, height =6)
 
 ```
