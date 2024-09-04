@@ -38,26 +38,25 @@
   "Packages": {
     "DataTidy24TBVaccSexDiff": {
       "Package": "DataTidy24TBVaccSexDiff",
-      "Version": "1.13.2",
+      "Version": "1.14.0",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
-      "RemoteRepo": "DataTidy24TBVaccSexDiff",
       "RemoteUsername": "SATVILab",
-      "RemotePkgRef": "SATVILab/DataTidy24TBVaccSexDiff@main",
+      "RemoteRepo": "DataTidy24TBVaccSexDiff",
       "RemoteRef": "main",
-      "RemoteSha": "98565a867f5da07f8dd4ee205053d15258f9a25f",
+      "RemoteSha": "1be3d7fe86b3a907a0cb385a17348b9c1f9090de",
       "Requirements": [
         "R",
         "dplyr"
       ],
-      "Hash": "ac9ff018618a9b47b1a767fca4b47e77"
+      "Hash": "ba31fa89d6a7a91b64ec1fef2bda3a00"
     },
     "Deriv": {
       "Package": "Deriv",
       "Version": "4.1.3",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "methods"
       ],
@@ -67,7 +66,7 @@
       "Package": "Formula",
       "Version": "1.2-5",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "R",
         "stats"
@@ -110,7 +109,7 @@
       "Package": "MatrixModels",
       "Version": "0.5-3",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "Matrix",
         "R",
@@ -150,6 +149,19 @@
       ],
       "Hash": "f27411eb6d9c3dada5edd444b8416675"
     },
+    "RcppEigen": {
+      "Package": "RcppEigen",
+      "Version": "0.3.4.0.0",
+      "Source": "Repository",
+      "Repository": "BioCcontainers",
+      "Requirements": [
+        "R",
+        "Rcpp",
+        "stats",
+        "utils"
+      ],
+      "Hash": "df49e3306f232ec28f1604e36a202847"
+    },
     "SparseM": {
       "Package": "SparseM",
       "Version": "1.84-2",
@@ -168,7 +180,7 @@
       "Package": "V8",
       "Version": "4.4.2",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "Rcpp",
         "curl",
@@ -181,7 +193,7 @@
       "Package": "abind",
       "Version": "1.4-5",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "R",
         "methods",
@@ -254,7 +266,7 @@
       "Package": "broom",
       "Version": "1.0.6",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "R",
         "backports",
@@ -307,7 +319,7 @@
       "Package": "car",
       "Version": "3.1-2",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "MASS",
         "R",
@@ -331,7 +343,7 @@
       "Package": "carData",
       "Version": "3.0-5",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "R"
       ],
@@ -462,7 +474,7 @@
       "Package": "doBy",
       "Version": "4.6.22",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "Deriv",
         "MASS",
@@ -546,7 +558,7 @@
       "Package": "flexmix",
       "Version": "2.3-19",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "R",
         "grDevices",
@@ -620,6 +632,22 @@
         "withr"
       ],
       "Hash": "44c6a2f8202d5b7e878ea274b1092426"
+    },
+    "ggrepel": {
+      "Package": "ggrepel",
+      "Version": "0.9.5",
+      "Source": "Repository",
+      "Repository": "BioCcontainers",
+      "Requirements": [
+        "R",
+        "Rcpp",
+        "ggplot2",
+        "grid",
+        "rlang",
+        "scales",
+        "withr"
+      ],
+      "Hash": "cc3361e234c4a5050e29697d675764aa"
     },
     "gh": {
       "Package": "gh",
@@ -780,7 +808,7 @@
       "Package": "jsonvalidate",
       "Version": "1.3.2",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "V8"
       ],
@@ -882,7 +910,7 @@
       "Package": "lmtest",
       "Version": "0.9-40",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "R",
         "graphics",
@@ -946,7 +974,7 @@
       "Package": "microbenchmark",
       "Version": "1.4.10",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "graphics",
         "stats"
@@ -967,7 +995,7 @@
       "Package": "minqa",
       "Version": "1.2.7",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "Rcpp"
       ],
@@ -977,7 +1005,7 @@
       "Package": "modelr",
       "Version": "0.1.11",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "R",
         "broom",
@@ -995,7 +1023,7 @@
       "Package": "modeltools",
       "Version": "0.2-23",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "methods",
         "stats",
@@ -1032,7 +1060,7 @@
       "Package": "nloptr",
       "Version": "2.1.1",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "BioCcontainers",
       "Hash": "27550641889a3abf3aec4d91186311ec"
     },
     "nnet": {
@@ -1051,7 +1079,7 @@
       "Package": "numDeriv",
       "Version": "2016.8-1.1",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "R"
       ],
@@ -1168,7 +1196,7 @@
       "Package": "ps",
       "Version": "1.7.6",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "CRAN",
       "Requirements": [
         "R",
         "utils"
@@ -1194,7 +1222,7 @@
       "Package": "quantreg",
       "Version": "5.98",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "MASS",
         "Matrix",
@@ -1252,7 +1280,7 @@
       "Package": "rlang",
       "Version": "1.1.4",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
       "Requirements": [
         "R",
         "utils"
@@ -1303,7 +1331,7 @@
       "Package": "sandwich",
       "Version": "3.1-0",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "R",
         "stats",
@@ -1346,23 +1374,11 @@
       ],
       "Hash": "c19df082ba346b0ffa6f833e92de34d1"
     },
-    "statmod": {
-      "Package": "statmod",
-      "Version": "1.5.0",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Requirements": [
-        "R",
-        "graphics",
-        "stats"
-      ],
-      "Hash": "26e158d12052c279bdd4ba858b80fb1f"
-    },
     "stringi": {
       "Package": "stringi",
       "Version": "1.8.4",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
       "Requirements": [
         "R",
         "stats",
@@ -1552,14 +1568,14 @@
       "Package": "yaml",
       "Version": "2.3.8",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "CRAN",
       "Hash": "29240487a071f535f5e5d5a323b7afbd"
     },
     "zoo": {
       "Package": "zoo",
       "Version": "1.8-12",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "R",
         "grDevices",
