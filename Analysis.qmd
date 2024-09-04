@@ -208,7 +208,7 @@ Taking the square root of the summed response:
 
 ### Betareg Model
 ```{r}
- Install and load package
+# Install and load package
 install.packages("betareg")
 install.packages("statmod")
 install.packages("numDeriv")

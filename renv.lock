@@ -38,19 +38,13 @@
   "Packages": {
     "DataTidy24TBVaccSexDiff": {
       "Package": "DataTidy24TBVaccSexDiff",
-      "Version": "1.14.0",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteUsername": "SATVILab",
-      "RemoteRepo": "DataTidy24TBVaccSexDiff",
-      "RemoteRef": "main",
-      "RemoteSha": "1be3d7fe86b3a907a0cb385a17348b9c1f9090de",
+      "Version": "1.14.1",
+      "Source": "unknown",
       "Requirements": [
         "R",
         "dplyr"
       ],
-      "Hash": "ba31fa89d6a7a91b64ec1fef2bda3a00"
+      "Hash": "61e2968fd8222c9468e136beaf2306da"
     },
     "Deriv": {
       "Package": "Deriv",
@@ -413,7 +407,7 @@
       "Package": "cowplot",
       "Version": "1.1.3",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/all/__linux__/jammy/latest",
+      "Repository": "BioCcontainers",
       "Requirements": [
         "R",
         "ggplot2",
@@ -1373,6 +1367,18 @@
         "viridisLite"
       ],
       "Hash": "c19df082ba346b0ffa6f833e92de34d1"
+    },
+    "statmod": {
+      "Package": "statmod",
+      "Version": "1.5.0",
+      "Source": "Repository",
+      "Repository": "BioCcontainers",
+      "Requirements": [
+        "R",
+        "graphics",
+        "stats"
+      ],
+      "Hash": "26e158d12052c279bdd4ba858b80fb1f"
     },
     "stringi": {
       "Package": "stringi",
