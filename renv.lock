@@ -39,12 +39,18 @@
     "DataTidy24TBVaccSexDiff": {
       "Package": "DataTidy24TBVaccSexDiff",
       "Version": "1.14.1",
-      "Source": "unknown",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "SATVILab",
+      "RemoteRepo": "DataTidy24TBVaccSexDiff",
+      "RemoteRef": "main",
+      "RemoteSha": "786a4751f17726eb80657c2bca832c7709ba9b72",
       "Requirements": [
         "R",
         "dplyr"
       ],
-      "Hash": "61e2968fd8222c9468e136beaf2306da"
+      "Hash": "2e36154f5a2d39ae844a36867cc44578"
     },
     "Deriv": {
       "Package": "Deriv",
