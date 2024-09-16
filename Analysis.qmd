@@ -43,14 +43,15 @@ data_tidy_vacc_summed
 data_tidy_vacc_profile <- data_tidy_vacc_freq |>
   vacc_calc_response_profile("response") |>
   vacc_calc_vaccine_induced_response("response") |>
-   vacc_set_neg_to_zero("response") |>
   vacc_extract_memory() |>
-  dplyr::filter(subset == "cd4")
+  dplyr::filter(subset == "cd4") |>
+  dplyr::filter(
+    vaccine %in% c("h1", "m72")
+  )
 data_tidy_vacc_profile
 ```
 
 ```{r}
-install.packages("cowplot")
 library(cowplot)
 ``` 
 
@@ -417,12 +418,14 @@ rp_box1 <- ggplot(data_tidy_vacc_profile, aes(x = sex, y = response, fill = sex)
   labs(title = "Response by Sex and Infection Status for each Cytokine Combination",
        x = "Sex",
        y = "Response") +
-  theme_cowplot_bg()   
+  theme_cowplot_bg() +
+  cowplot::background_grid(major = "xy") +
+  geom_hline(yintercept = 0, col = "black")
    
 ggsave('Profile by cytokine combination.png',rp_box1)
 
  #subset boxplot filtering 2 vaccines
-selected_vaccines <- c('h1', 'mva85a')
+selected_vaccines <- c('h1', 'm72')
 
 # Selected 2 vaccines project slides
 # Filter the dataset
@@ -556,6 +559,7 @@ ggsave('pca_mean_position2.png', pca_plot3, width= 10, height =6)
 Transform response to lie between 0 and 1 using proportions:
 ```{r}
 data_tidy_vacc_profile <- data_tidy_vacc_profile |>
+  dplyr::mutate(response = pmax(0, response)) |> 
   dplyr::mutate(response_proportion = sqrt(response / 100) + 1e-6)
 ```
 
