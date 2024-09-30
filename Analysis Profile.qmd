@@ -231,7 +231,7 @@ lm_inf <- list()
 # Loop through each vaccine group, fit LM and store results
 for (group in vaccine_inf) {
   vaccine <- unique(group$vaccine)
-  model <- lm(response ~ sex, data = group)
+  model <- lm(response ~ sex, data = group) 
   lm_inf[[vaccine]] <- model
 }
 summary(lm_inf[['h1']])
@@ -347,7 +347,6 @@ for (vaccine in names(lm_uninf)) {
 ```
 
 
-
 # Beta Regression
 Fit beta regression model for infected individuals with interaction term
 ```{r}
@@ -355,11 +354,11 @@ library(betareg)
 library(statmod)
 library(numDeriv)
 
-full_model_inf1 <- betareg(response_proportion ~ sex * vaccine * cyt_combn, data = data_tidy_vacc_profile|>
+full_model_inf <- betareg(response_proportion ~ sex * vaccine * cyt_combn, data = data_tidy_vacc_profile|>
                   dplyr::filter(ptid %in% participant_ids)|>
                   dplyr::filter(infxn =="infected"))
 
-summary(full_model_inf1)
+summary(full_model_inf)
 
 library(purrr)
 
@@ -370,10 +369,10 @@ cytokine_splits <- data_tidy_vacc_profile %>%
   split(.$cyt_combn)
 
 # Fit beta regression model for each cytokine combination
-beta_models_inf1 <- map(cytokine_splits, function(data) {
+beta_models_inf <- map(cytokine_splits, function(data) {
   betareg(response_proportion ~ sex * vaccine, data = data)
 })
-beta_models_inf1
+beta_models_inf
 ```
 
 Fit the models excluding the mva85a and h56 vaccines due to small sample sizes
@@ -403,7 +402,7 @@ beta_models2
 
 Fit beta regression model for uninfected individuals with interaction term
 ```{r}
-full_model_uninf1 <- betareg(response_proportion ~ sex * vaccine * cyt_combn, data = data_tidy_vacc_profile|>
+full_model_uninf <- betareg(response_proportion ~ sex * vaccine * cyt_combn, data = data_tidy_vacc_profile|>
                   dplyr::filter(ptid %in% participant_ids)|>
                   dplyr::filter(infxn =="uninfected"))
 
@@ -416,9 +415,9 @@ cytokine_splits <- data_tidy_vacc_profile %>%
   split(.$cyt_combn)
 
 # Fit beta regression model for each cytokine combination
-beta_models_uninf1 <- map(cytokine_splits, function(data) {
+beta_models_uninf <- map(cytokine_splits, function(data) {
   betareg(response_proportion ~ sex * vaccine, data = data)
 })
-beta_models_uninf1
+beta_models_uninf
 ```
 
