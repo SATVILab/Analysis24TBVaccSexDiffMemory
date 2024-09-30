@@ -86,7 +86,6 @@ profile_2 <- ggplot(filtered_data, aes(x = sex, y = response, fill = sex)) +
   guides(fill = guide_legend(title = NULL))   
 
 ggsave('Profile boxplot 2.png',profile_2)  
-
 ```
 
 ### PCA Biplot
