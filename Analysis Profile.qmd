@@ -1,5 +1,5 @@
 ---
-title: Analyse memory response
+title: Analyse memory response profile
 format:
   html:
     embed-resources: true
@@ -42,7 +42,7 @@ data_tidy_vacc_profile <- data_tidy_vacc_freq |>
 data_tidy_vacc_profile
 ```
 
-## Response Profile
+## EDA
 Boxplot of response profile:
 
 ```{r}
@@ -71,7 +71,7 @@ selected_vaccines <- c('h1', 'm72')
 filtered_data <- data_tidy_vacc_profile %>%
   filter(vaccine %in% selected_vaccines)
 
-profile_2 <- ggplot(filtered_data, aes(x = sex, y = response, fill = sex)) +
+rp_box2 <- ggplot(filtered_data, aes(x = sex, y = response, fill = sex)) +
   geom_boxplot() +
   facet_grid(vaccine + infxn ~ cyt_combn, scales = "free") +
   #facet_grid(vaccine ~ infxn,labeller = labeller(vaccine = toupper)) +
@@ -85,10 +85,10 @@ profile_2 <- ggplot(filtered_data, aes(x = sex, y = response, fill = sex)) +
   background_grid(major='y')+
   guides(fill = guide_legend(title = NULL))   
 
-ggsave('Profile boxplot 2.png',profile_2)  
+ggsave('Profile boxplot 2.png',rp_box2)  
 ```
 
-### PCA Biplot
+## PCA Biplot
 ```{r}
 #create a wide format where each cytokine combination is a separate column
 profile_wide <- data_tidy_vacc_profile |>
@@ -190,10 +190,9 @@ pca_plot3 <- ggplot(pca_data|>dplyr::filter(infxn=='infected'), aes(x = PC1, y =
 
 
 ggsave('pca_mean_position2.png', pca_plot3, width= 10, height =6)
-
 ```
 
-### Analysis of Response Profile: 
+## Analysis of Response Profile: 
 Transform response to lie between 0 and 1 using proportions:
 ```{r}
 data_tidy_vacc_profile <- data_tidy_vacc_profile |>
@@ -208,6 +207,148 @@ participant_ids <- data_tidy_vacc_profile %>%
   pull(ptid)
 ```
 
+## Linear Models
+For infected individuals 
+```{r}
+# Filter data to include only infected individuals
+# Convert `sex` to a factor for modeling
+inf_data <- data_tidy_vacc_profile %>%
+  filter(ptid %in% participant_ids)|>
+  filter(infxn == "infected") %>%
+  mutate(sex = factor(sex, levels = c("male", "female")))
+
+# Split data by vaccine
+vaccine_inf <- inf_data %>%
+  group_by(vaccine) %>%
+  group_split()
+```
+
+Fit linear models to assess the effect of sex on the immune response profile for infected individuals:
+```{r}
+# Initialize list to store models
+lm_inf <- list()
+
+# Loop through each vaccine group, fit LM and store results
+for (group in vaccine_inf) {
+  vaccine <- unique(group$vaccine)
+  model <- lm(response ~ sex, data = group)
+  lm_inf[[vaccine]] <- model
+}
+summary(lm_inf[['h1']])
+summary(lm_inf[['m72']])
+```
+
+Fit linear models to assess the effect of sex on the immune response profile for each cytokine combination for infected individuals:
+```{r}
+# Initialize list to store models for each vaccine and cytokine combination
+lm_inf <- list()
+
+# Loop through each vaccine group and fit LM for every cytokine combination
+for (group in vaccine_inf) {
+  vaccine <- unique(group$vaccine)
+  
+  # Split the group further by cytokine combination
+  cyt_combn_groups <- group %>%
+    group_by(cyt_combn) %>%
+    group_split()
+  
+  # Initialize sublist for each vaccine
+  lm_inf[[vaccine]] <- list()
+  
+  # Fit models for each cytokine combination
+  for (cytokine_group in cyt_combn_groups) {
+    cytokine <- unique(cytokine_group$cyt_combn)
+    model <- lm(response ~ sex, data = cytokine_group)
+    
+    # Store the model in the list under the vaccine and cytokine combination
+    lm_inf[[vaccine]][[cytokine]] <- model
+  }
+}
+
+# Loop through all vaccines and their cytokine combinations to obtain results
+for (vaccine in names(lm_inf)) {
+  cat("Vaccine:", vaccine, "\n")
+  
+  for (cytokine in names(lm_inf[[vaccine]])) {
+    cat("\nCytokine Combination:", cytokine, "\n")
+    print(summary(lm_inf[[vaccine]][[cytokine]]))
+    cat("\n--------------------------------------------\n")
+  }
+}
+```
+
+For uninfected individuals:
+```{r}
+# Filter data to include only uninfected individuals
+# Convert `sex` to a factor for modeling
+uninf_data <- data_tidy_vacc_profile %>%
+  filter(ptid %in% participant_ids)|>
+  filter(infxn == "uninfected") %>%
+  mutate(sex = factor(sex, levels = c("male", "female")))
+
+# Split data by vaccine
+vaccine_uninf <- uninf_data %>%
+  group_by(vaccine) %>%
+  group_split()
+```
+
+Fit linear models for each vaccine to assess the effect of sex on the immune response profile for uninfected individuals:
+```{r}
+# Initialize list to store models
+lm_uninf <- list()
+
+# Loop through each vaccine group, fit LM and store results
+for (group in vaccine_uninf) {
+  vaccine <- unique(group$vaccine)
+  model <- lm(response ~ sex, data = group)
+  lm_uninf[[vaccine]] <- model
+}
+summary(lm_uninf[['h1']])
+summary(lm_uninf[['m72']])
+```
+
+Fit linear models to assess the effect of sex on the immune response profile for each cytokine combination for uninfected individuals:
+```{r}
+# Initialize list to store models for each vaccine and cytokine combination
+lm_uninf <- list()
+
+# Loop through each vaccine group and fit LM for every cytokine combination
+for (group in vaccine_uninf) {
+  vaccine <- unique(group$vaccine)
+  
+  # Split the group further by cytokine combination
+  cyt_combn_groups <- group %>%
+    group_by(cyt_combn) %>%
+    group_split()
+  
+  # Initialize sublist for each vaccine
+  lm_uninf[[vaccine]] <- list()
+  
+  # Fit models for each cytokine combination
+  for (cytokine_group in cyt_combn_groups) {
+    cytokine <- unique(cytokine_group$cyt_combn)
+    model <- lm(response ~ sex, data = cytokine_group)
+    
+    # Store the model in the list under the vaccine and cytokine combination
+    lm_uninf[[vaccine]][[cytokine]] <- model
+  }
+}
+
+# Loop through all vaccines and their cytokine combinations to obtain results
+for (vaccine in names(lm_uninf)) {
+  cat("Vaccine:", vaccine, "\n")
+  
+  for (cytokine in names(lm_uninf[[vaccine]])) {
+    cat("\nCytokine Combination:", cytokine, "\n")
+    print(summary(lm_uninf[[vaccine]][[cytokine]]))
+    cat("\n--------------------------------------------\n")
+  }
+}
+```
+
+
+
+# Beta Regression
 Fit beta regression model for infected individuals with interaction term
 ```{r}
 library(betareg)
@@ -280,3 +421,4 @@ beta_models_uninf1 <- map(cytokine_splits, function(data) {
 })
 beta_models_uninf1
 ```
+
