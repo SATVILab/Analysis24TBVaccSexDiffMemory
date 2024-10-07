@@ -341,7 +341,7 @@ abline(h= 0, col= "red", lwd= 2)
 dev.off()
 ```
 
-##### Performing Simultaneous Hypothesis tests
+##### Global test for sex effect for at least one vaccine
 
 Loading the required packages for the simulataneous test:
 ```{r}
