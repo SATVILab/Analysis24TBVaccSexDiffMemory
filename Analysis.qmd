@@ -341,6 +341,68 @@ abline(h= 0, col= "red", lwd= 2)
 dev.off()
 ```
 
+Exploration of Residuals for uninfected Individuals:
+
+```{r}
+# Add residuals to the dataset
+data_uninfected_residuals <-  data_tidy_vacc_summed %>%
+  dplyr::filter(infxn == "uninfected") %>%
+  dplyr::mutate(residuals = model_uninfected$residuals)
+
+# Summarize residuals by vaccine
+residual_summary <- data_uninfected_residuals |> 
+  dplyr::group_by(vaccine) |> 
+  dplyr::summarise(mean_residual = mean(residuals, na.rm = TRUE),
+                   sd_residual = sd(residuals, na.rm = TRUE),
+                   min_residual = min(residuals, na.rm = TRUE),
+                   max_residual = max(residuals, na.rm = TRUE))
+
+# Boxplot of residuals by vaccine
+residual_vacc_uninf <- ggplot(data_uninfected_residuals, aes(x = vaccine, y = residuals)) +
+  geom_boxplot() +
+  labs(y = "Residuals", x = "Vaccine") +
+  scale_x_discrete(labels = toupper) +
+  theme_cowplot_bg()
+ggsave('Residual by Vaccine for Uninfected Individuals_memory.png',residual_vacc_uninf)
+
+# Q-Q plot for the residuals of the beta regression model
+png("Q-Q Plot of Residuals for Uninfected Individuals_memory.png")
+qqnorm(model_uninfected$residuals)
+qqline(model_uninfected$residuals, col = "red", lwd = 2)
+dev.off()
+```
+
+Exploration of Residuals for infected Individuals:
+
+```{r}
+# Add residuals to the dataset
+data_infected_residuals <-  data_tidy_vacc_summed %>%
+  dplyr::filter(infxn == "infected") %>%
+  dplyr::mutate(residuals = model_infected$residuals)
+
+# Summarize residuals by vaccine
+residual_summary <- data_infected_residuals |> 
+  dplyr::group_by(vaccine) |> 
+  dplyr::summarise(mean_residual = mean(residuals, na.rm = TRUE),
+                   sd_residual = sd(residuals, na.rm = TRUE),
+                   min_residual = min(residuals, na.rm = TRUE),
+                   max_residual = max(residuals, na.rm = TRUE))
+
+# Boxplot of residuals by vaccine
+residual_vacc_inf <- ggplot(data_infected_residuals, aes(x = vaccine, y = residuals)) +
+  geom_boxplot() +
+  labs(y = "Residuals", x = "Vaccine") +
+  scale_x_discrete(labels = toupper) +
+  theme_cowplot_bg()
+ggsave('Residual by Vaccine for Infected Individuals_memory.png',residual_vacc_inf)
+
+# Q-Q plot for the residuals of the beta regression model
+png("Q-Q Plot of Residuals for Infected Individuals_memory.png")
+qqnorm(model_infected$residuals)
+qqline(model_infected$residuals, col = "red", lwd = 2)
+dev.off()
+```
+
 ##### Global test for sex effect for at least one vaccine
 
 Loading the required packages for the simulataneous test:
