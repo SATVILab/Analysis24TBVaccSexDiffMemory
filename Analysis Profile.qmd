@@ -258,7 +258,7 @@ mean_positions <- mean_positions %>%
   dplyr::mutate(combo = paste(Vaccine, Sex, sep = "-"))
 
 pca_mean_inf <- ggplot(pca_data, aes(x = PC1, y = PC2, color = Vaccine, shape = Sex)) +
-  labs(title = "PCA Biplot with Mean Positions", 
+  labs(title = " ", 
        x = paste0("PC1 (", pc1_var, ")"), 
        y = paste0("PC2 (", pc2_var, ")")) +
   geom_segment(data = scaled_loadings, aes(x = 0, y = 0, xend = PC1, yend = PC2), 
