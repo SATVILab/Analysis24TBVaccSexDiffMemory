@@ -649,11 +649,6 @@ inf_tbl_inf <- inf_tbl_inf |>
   dplyr::mutate(`Q-value` = p.adjust(`P-value`, method = "holm")) |>
   dplyr::select(Vaccine, Estimate, `P-value`, `Q-value`, `95% CI Lower`, `95% CI Upper`)
 
-#inf_tbl_inf <- inf_tbl_inf |>
-#  dplyr::mutate(
-#    `P-value` = ifelse(`P-value` < 0.001, "<0.001", round(`P-value`, 3))
-#  )
-
 inf_tbl_inf <- inf_tbl_inf |> 
   dplyr::mutate(
     `P-value` = ifelse(`P-value` < 0.001, "<0.001", round(as.numeric(`P-value`), 3))
