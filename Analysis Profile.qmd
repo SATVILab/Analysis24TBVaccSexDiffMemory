@@ -692,11 +692,52 @@ p_inf <- ggplot(
     color = "black"
   )
 
-path_fig_inf <- "Estimates of effect sizes and CI response_profile.pdf"
+path_fig_inf <- "Estimates of effect sizes and CI response_profile_memory.pdf"
 ggsave(
   path_fig_inf,
   p_inf,
   width = 10,
   height = 6
 )
+```
+
+### Non-parametric
+
+For g+2+t+:
+```{r}
+library(dplyr)
+library(purrr)
+
+mw_tbl_summed <- purrr::map_df(unique(data_tidy_vacc_summed$infxn), function(infxn) {
+  data_tidy_vacc_sub <- data_tidy_vacc_profile |>
+    dplyr::filter(infxn == .env$infxn) |>
+    dplyr::filter(cyt_combn == "g+2+t+")
+  
+  purrr::map_df(unique(data_tidy_vacc_sub$vaccine), function(vaccine) {
+    data_tidy_vacc_sub_sub <- data_tidy_vacc_sub |>
+      dplyr::filter(vaccine == .env$vaccine)
+    
+    resp_vec_male <- data_tidy_vacc_sub_sub |>
+      dplyr::filter(sex == "male") |>
+      dplyr::pull(response)
+    resp_vec_female <- data_tidy_vacc_sub_sub |>
+      dplyr::filter(sex == "female") |>
+      dplyr::pull(response)
+    
+    # Allow approximate p-value computation
+    p_val <- wilcox.test(resp_vec_male, resp_vec_female, exact = FALSE)$p.value
+    
+    tibble::tibble(
+      infxn = infxn, vaccine = vaccine, p_val = p_val
+    )
+  })
+})
+
+mw_tbl_summed <- mw_tbl_summed |>
+  dplyr::group_by(infxn) |>
+  dplyr::mutate(q_val = p.adjust(p_val, method = "holm")) |>
+  dplyr::ungroup()
+
+mw_tbl_summed|>filter(infxn=="infected")
+
 ```
