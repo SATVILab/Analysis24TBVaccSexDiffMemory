@@ -574,3 +574,28 @@ final_results_inf <- final_results_inf |>
 # View final results with Holm-adjusted p-values
 final_results_inf
 ```
+
+## Individual Models
+
+```{r}
+cyt_combinations <- c("g+2+t+", "g+2-t-")
+
+# Loop over each cytokine combination
+for (cyt in cyt_combinations) {
+  
+  # Filter data for the current cytokine combination and infected individuals
+  data_cyt <- data_tidy_vacc_profile |> 
+    dplyr::filter(ptid %in% participant_ids) |>
+    dplyr::filter(cyt_combn == cyt, infxn == "infected")
+ 
+  # Fit beta regression model
+  beta_model <- betareg(
+    response_proportion ~ sex * vaccine,
+    data = data_cyt
+  )
+  
+  # Print the model summary for the current cytokine combination
+  cat("\nSummary for Cytokine Combination:", cyt, "\n")
+  print(summary(beta_model))
+}
+```
