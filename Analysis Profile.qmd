@@ -518,7 +518,7 @@ results_list <- list()
 
 # Get unique cytokine combinations from the data
 cyt_combinations <- unique(data_tidy_vacc_profile$cyt_combn)
-#cyt_combinations <- c("g+2+t+", "g+2-t-")
+cyt_combinations <- c("g+2+t+", "g+2-t-")
 # Loop over each cytokine combination
 for (cyt in cyt_combinations) {
   
@@ -528,14 +528,14 @@ for (cyt in cyt_combinations) {
     dplyr::filter(cyt_combn == cyt, infxn == "infected")
   
   # Full model with sex and vaccine interaction
-  full_model_inf <- lm(
-    response ~ sex * vaccine,
+  full_model_inf <- betareg(
+    response_proportion ~ sex * vaccine,
     data = data_cyt
   )
   
   # Null model without sex effect
-  null_model_inf <- lm(
-    response ~ vaccine,
+  null_model_inf <- betareg(
+    response_proportion ~ vaccine,
     data = data_cyt
   )
   
