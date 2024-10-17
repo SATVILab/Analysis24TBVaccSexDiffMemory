@@ -461,18 +461,14 @@ beta_models_inf <- map(cytokine_splits, function(data) {
 beta_models_inf
 ```
 
-Fit the models excluding the mva85a and h56 vaccines due to small sample sizes
+Fit the models excluding the mva85a and h56 vaccines due to small sample sizes (and no difference in magnitude)
 
 ```{r}
-#full_model_inf2 <- betareg(response_proportion ~ sex * vaccine * cyt_combn, data = data_tidy_vacc_profile|>
-#                           dplyr::filter(ptid %in% participant_ids)|>
-#                            dplyr::filter(infxn =="infected"))|>
-#                            filter(!vaccine %in% c("mva85a", "h56"))
-#
-#summary(full_model_inf2)
-
 cytokine_splits <- data_tidy_vacc_profile %>%
   filter(ptid %in% participant_ids) %>%
+  dplyr::filter(
+    cyt_combn %in% c("g+2+t+", "g+2-t-")
+  ) |>
   filter(infxn == "infected") %>%
   filter(!vaccine %in% c("mva85a", "h56")) %>%  # Exclude specific vaccines
   split(.$cyt_combn)
@@ -483,6 +479,15 @@ beta_models2 <- map(cytokine_splits, function(data) {
 })
 beta_models2
 
+# Fit beta regression model for each cytokine combination
+comp_models_inf <- map(cytokine_splits, function(data) {
+  beta_fit <- betareg(response_proportion ~ sex * vaccine, data = data)
+  lm_fit <- lm(response_proportion ~ sex * vaccine, data = data)
+  list("beta" = beta_fit, "lm" = lm_fit)
+})
+model_results_comp <- lapply(comp_models_inf, function(x) {
+  list("beta" = BIC(x$beta), "lm" = BIC(x$lm))
+})
 ```
 
 
