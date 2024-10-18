@@ -1213,3 +1213,36 @@ plot_residuals("g+2-t-", "Redo residuals_g+2-t-.png")
 
 ```
 
+```{r}
+# Function to plot residuals boxplot for a given cytokine combination using ggplot2
+plot_residuals_boxplot_gg <- function(cyt_combn_label, file_name) {
+  # Filter data for the current cytokine combination and infected individuals
+  data <- data_tidy_vacc_profile |> 
+    dplyr::filter(ptid %in% participant_ids) |>
+    dplyr::filter(cyt_combn == cyt_combn_label, infxn == "infected")
+  
+  # Fit the beta regression model
+  full_model <- betareg(response_proportion ~ sex * vaccine, data = data)
+  
+  # Add residuals to the data for plotting
+  data$residuals <- full_model$residuals
+  
+  # Plot the residuals as a boxplot using ggplot2
+  residual_plot <- ggplot(data, aes(x = vaccine, y = residuals, fill = vaccine)) +
+    geom_boxplot() +
+    labs(y = "Residuals", x = "Vaccine") +
+    scale_x_discrete(labels = toupper) +
+    scale_fill_manual(
+      values = c("h56" = "red", "h1" = "blue", "mva85a" = "purple", "m72" = "green")) +
+    theme_cowplot_bg()
+  
+  # Save the plot
+  ggsave(file_name, plot = residual_plot)
+}
+
+# Plot boxplot for "g+2+t+" combination
+plot_residuals_boxplot_gg("g+2+t+", "Boxplot_residuals_g+2+t+.png")
+
+# Plot boxplot for "g+2-t-" combination
+plot_residuals_boxplot_gg("g+2-t-", "Boxplot_residuals_g+2-t-.png")
+```
