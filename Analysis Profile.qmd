@@ -1213,6 +1213,36 @@ plot_residuals("g+2-t-", "Redo residuals_g+2-t-.png")
 
 ```
 
+QQ plots of the residuals: 
+
+```{r}
+# Function to plot Q-Q plots for residuals of a given cytokine combination
+plot_residuals_qq <- function(cyt_combn_label, file_name) {
+  # Filter data for the current cytokine combination and infected individuals
+  data <- data_tidy_vacc_profile |> 
+    dplyr::filter(ptid %in% participant_ids) |>
+    dplyr::filter(cyt_combn == cyt_combn_label, infxn == "infected")
+  
+  # Fit the beta regression model
+  full_model <- betareg(response_proportion ~ sex * vaccine, data = data)
+  
+  # Plot the Q-Q plot for the residuals
+  png(file_name)
+  qqnorm(full_model$residuals, main = paste("Q-Q Plot for", cyt_combn_label))
+  qqline(full_model$residuals, col = "red", lwd = 2)
+  dev.off()
+}
+
+# Q-Q plot for "g+2+t+" combination
+plot_residuals_qq("g+2+t+", "QQ_Plot_residuals_g+2+t+.png")
+
+# Q-Q plot for "g+2-t-" combination
+plot_residuals_qq("g+2-t-", "QQ_Plot_residuals_g+2-t-.png")
+```
+
+
+Boxplots of the residuals:
+
 ```{r}
 # Function to plot residuals boxplot for a given cytokine combination using ggplot2
 plot_residuals_boxplot_gg <- function(cyt_combn_label, file_name) {
