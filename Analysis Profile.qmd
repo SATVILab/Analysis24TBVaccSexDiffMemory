@@ -875,3 +875,17 @@ mw_tbl_profile <- mw_tbl_profile |>
 mw_tbl_profile|>filter(infxn=="infected")
 
 ```
+
+### Beta regression re-do
+
+Transform response to lie between 0 and 1 using proportions:
+
+```{r}
+data_tidy_vacc_profile <- data_tidy_vacc_profile |>
+  dplyr::mutate(response = pmax(0, response)) |> 
+  dplyr::mutate(response_proportion =  pmax(
+      response_proportion,
+      min(response_proportion[response_proportion > min(response_proportion)])
+    )
+  )
+```
