@@ -805,7 +805,7 @@ ggsave(
 )
 ```
 
-# Residual plots 
+## Residual plots 
 
 ```{r}
 # Function to plot residuals for a given cytokine combination
@@ -876,7 +876,7 @@ mw_tbl_profile|>filter(infxn=="infected")
 
 ```
 
-### Beta regression re-do
+# Beta regression re-do
 
 Transform response to lie between 0 and 1 using proportions:
 
@@ -889,3 +889,260 @@ data_tidy_vacc_profile <- data_tidy_vacc_profile |>
     )
   )
 ```
+
+##  Individual Models
+```{r}
+cyt_combinations <- c("g+2+t+", "g+2-t-")
+
+# Loop over each cytokine combination
+for (cyt in cyt_combinations) {
+  
+  # Filter data for the current cytokine combination and infected individuals
+  data_cyt <- data_tidy_vacc_profile |> 
+    dplyr::filter(ptid %in% participant_ids) |>
+    dplyr::filter(cyt_combn == cyt, infxn == "infected")
+ 
+  # Fit beta regression model
+  beta_model <- betareg(
+    response_proportion ~ sex * vaccine,
+    data = data_cyt
+  )
+  
+  # Print the model summary for the current cytokine combination
+  cat("\nSummary for Cytokine Combination:", cyt, "\n")
+  print(summary(beta_model))
+}
+```
+
+## Getting per-vaccine sex effect estimates and inference 
+
+For "g+2+t+":
+
+```{r}
+# Filter data for the current cytokine combination and infected individuals
+data <- data_tidy_vacc_profile |> 
+  dplyr::filter(ptid %in% participant_ids) |>
+  dplyr::filter(cyt_combn == "g+2+t+", infxn == "infected")
+
+# H1
+full_model_h1 <- betareg(
+  response_proportion ~ sex * vaccine,
+  data = data |> 
+    dplyr::mutate(vaccine = factor(vaccine, levels = c("h1", "m72")))
+)
+
+est_h1 <- summary(full_model_h1)$coefficients[[1]]["sexmale", "Estimate"]
+p_val_h1 <- summary(full_model_h1)$coefficients[[1]]["sexmale", "Pr(>|z|)"]
+ci_h1 <- confint(full_model_h1)[2, c("2.5 %", "97.5 %")]
+h1_row <- tibble(
+  Vaccine = "H1",
+  Estimate = est_h1,
+  `95% CI Lower` = ci_h1[1],
+  `95% CI Upper` = ci_h1[2],
+  `P-value` = p_val_h1
+)
+
+#M72
+full_model_m72 <- betareg(
+  response_proportion ~ sex * vaccine,
+  data = data |> 
+    dplyr::mutate(vaccine = factor(vaccine, levels = c("m72","h1")))
+)
+
+est_m72 <- summary(full_model_m72)$coefficients[[1]]["sexmale", "Estimate"]
+p_val_m72 <- summary(full_model_m72)$coefficients[[1]]["sexmale", "Pr(>|z|)"]
+ci_m72 <- confint(full_model_m72)[2, c("2.5 %", "97.5 %")]
+m72_row <- tibble(
+  Vaccine = "M72",
+  Estimate = est_m72,
+  `95% CI Lower` = ci_m72[1],
+  `95% CI Upper` = ci_m72[2],
+  `P-value` = p_val_m72
+)
+
+inf_tbl_inf <- bind_rows(h1_row, m72_row)
+inf_tbl_inf <- inf_tbl_inf |> 
+  dplyr::mutate(`Q-value` = p.adjust(`P-value`, method = "holm")) |>
+  dplyr::select(Vaccine, Estimate, `P-value`, `Q-value`, `95% CI Lower`, `95% CI Upper`)
+
+inf_tbl_inf <- inf_tbl_inf |> 
+  dplyr::mutate(
+    `P-value` = ifelse(`P-value` < 0.001, "<0.001", round(as.numeric(`P-value`), 3))
+  )
+
+# Plot with p-values
+p_inf <- ggplot(
+  inf_tbl_inf,
+  aes(
+    x = Vaccine,
+    y = Estimate,
+    ymin = `95% CI Lower`,
+    ymax = `95% CI Upper`,
+    color = Vaccine
+  )
+) +
+  theme_cowplot_bg() +
+  cowplot::background_grid(major = "y") + 
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
+  geom_pointrange() +
+  labs(x = "Vaccine", y = "Sex effect") +
+  geom_errorbar(aes(ymin = `95% CI Lower`, ymax = `95% CI Upper`), width = 0.1) +
+  scale_color_manual(
+    values = c("H1" = "blue","M72" = "green")
+  ) +
+  scale_y_continuous(limits = c(min(inf_tbl_inf$`95% CI Lower`, na.rm = TRUE), 
+                                max(inf_tbl_inf$`95% CI Upper`, na.rm = TRUE) + 0.1)) +
+  #scale_y_continuous(limits = c(NA, 0.6)) +
+  theme(
+    legend.position = "none",
+    axis.title.x = element_text(size = 20),  # Increase x-axis label size
+    axis.title.y = element_text(size = 20),   # Increase y-axis label size
+    axis.text.x = element_text(size = 19),   # Adjust x-axis tick label size
+    axis.text.y = element_text(size = 19)  
+  ) +
+  # Add p-value text labels
+  geom_text(
+    aes(label = `P-value`, y =  `95% CI Upper`+0.04),
+    vjust = -0.5,
+    size = 6,
+    color = "black"
+  )
+
+path_fig_inf <- "Redo Effect sizes and CI response_profile_memory1.pdf"
+ggsave(
+  path_fig_inf,
+  p_inf,
+  width = 10,
+  height = 6
+)
+```
+
+For "g+2-t-":
+
+```{r}
+# Filter data for the current cytokine combination and infected individuals
+data <- data_tidy_vacc_profile |> 
+  dplyr::filter(ptid %in% participant_ids) |>
+  dplyr::filter(cyt_combn == "g+2-t-", infxn == "infected")
+
+# H1
+full_model_h1 <- betareg(
+  response_proportion ~ sex * vaccine,
+  data = data |> 
+    dplyr::mutate(vaccine = factor(vaccine, levels = c("h1", "m72")))
+)
+
+est_h1 <- summary(full_model_h1)$coefficients[[1]]["sexmale", "Estimate"]
+p_val_h1 <- summary(full_model_h1)$coefficients[[1]]["sexmale", "Pr(>|z|)"]
+ci_h1 <- confint(full_model_h1)[2, c("2.5 %", "97.5 %")]
+h1_row <- tibble(
+  Vaccine = "H1",
+  Estimate = est_h1,
+  `95% CI Lower` = ci_h1[1],
+  `95% CI Upper` = ci_h1[2],
+  `P-value` = p_val_h1
+)
+
+#M72
+full_model_m72 <- betareg(
+  response_proportion ~ sex * vaccine,
+  data = data |> 
+    dplyr::mutate(vaccine = factor(vaccine, levels = c("m72","h1")))
+)
+
+est_m72 <- summary(full_model_m72)$coefficients[[1]]["sexmale", "Estimate"]
+p_val_m72 <- summary(full_model_m72)$coefficients[[1]]["sexmale", "Pr(>|z|)"]
+ci_m72 <- confint(full_model_m72)[2, c("2.5 %", "97.5 %")]
+m72_row <- tibble(
+  Vaccine = "M72",
+  Estimate = est_m72,
+  `95% CI Lower` = ci_m72[1],
+  `95% CI Upper` = ci_m72[2],
+  `P-value` = p_val_m72
+)
+
+inf_tbl_inf <- bind_rows(h1_row, m72_row)
+inf_tbl_inf <- inf_tbl_inf |> 
+  dplyr::mutate(`Q-value` = p.adjust(`P-value`, method = "holm")) |>
+  dplyr::select(Vaccine, Estimate, `P-value`, `Q-value`, `95% CI Lower`, `95% CI Upper`)
+
+inf_tbl_inf <- inf_tbl_inf |> 
+  dplyr::mutate(
+    `P-value` = ifelse(`P-value` < 0.001, "<0.001", round(as.numeric(`P-value`), 3))
+  )
+
+# Plot with p-values
+p_inf <- ggplot(
+  inf_tbl_inf,
+  aes(
+    x = Vaccine,
+    y = Estimate,
+    ymin = `95% CI Lower`,
+    ymax = `95% CI Upper`,
+    color = Vaccine
+  )
+) +
+  theme_cowplot_bg() +
+  cowplot::background_grid(major = "y") + 
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
+  geom_pointrange() +
+  labs(x = "Vaccine", y = "Sex effect") +
+  geom_errorbar(aes(ymin = `95% CI Lower`, ymax = `95% CI Upper`), width = 0.1) +
+  scale_color_manual(
+    values = c("H1" = "blue","M72" = "green")
+  ) +
+  scale_y_continuous(limits = c(min(inf_tbl_inf$`95% CI Lower`, na.rm = TRUE), 
+                                max(inf_tbl_inf$`95% CI Upper`, na.rm = TRUE) + 0.1)) +
+  #scale_y_continuous(limits = c(NA, 0.6)) +
+  theme(
+    legend.position = "none",
+    axis.title.x = element_text(size = 20),  # Increase x-axis label size
+    axis.title.y = element_text(size = 20),   # Increase y-axis label size
+    axis.text.x = element_text(size = 19),   # Adjust x-axis tick label size
+    axis.text.y = element_text(size = 19)  
+  ) +
+  # Add p-value text labels
+  geom_text(
+    aes(label = `P-value`, y =  `95% CI Upper`+0.04),
+    vjust = -0.5,
+    size = 6,
+    color = "black"
+  )
+
+path_fig_inf <- "Redo Effect sizes and CI response_profile_memory2.pdf"
+ggsave(
+  path_fig_inf,
+  p_inf,
+  width = 10,
+  height = 6
+)
+```
+
+## Residual plots 
+
+```{r}
+# Function to plot residuals for a given cytokine combination
+plot_residuals <- function(cyt_combn_label, file_name) {
+  # Filter data for the current cytokine combination and infected individuals
+  data <- data_tidy_vacc_profile |> 
+    dplyr::filter(ptid %in% participant_ids) |>
+    dplyr::filter(cyt_combn == cyt_combn_label, infxn == "infected")
+  
+  # Fit the beta regression model
+  full_model <- betareg(response_proportion ~ sex * vaccine, data = data)
+  
+  # Plot the residuals
+  png(file_name)
+  plot(full_model$residuals, main = " ", ylab = 'Residuals')
+  abline(h = 0, col = "red", lwd = 2)
+  dev.off()
+}
+
+# Plot residuals for "g+2+t+" combination
+plot_residuals("g+2+t+", "Redo residuals_g+2+t+.png")
+
+# Plot residuals for "g+2-t-" combination
+plot_residuals("g+2-t-", "Redo residuals_g+2-t-.png")
+
+```
+
