@@ -1228,7 +1228,7 @@ plot_residuals_qq <- function(cyt_combn_label, file_name) {
   
   # Plot the Q-Q plot for the residuals
   png(file_name)
-  qqnorm(full_model$residuals, main = paste("Q-Q Plot for", cyt_combn_label))
+  qqnorm(full_model$residuals, main = " ")
   qqline(full_model$residuals, col = "red", lwd = 2)
   dev.off()
 }
