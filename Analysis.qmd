@@ -280,8 +280,8 @@ model_uninfected <- betareg(
 summary(model_uninfected)
 
 # Plotting Residuals for uninfected
-png("residuals_uninfected.png")
-plot(model_uninfected$residuals, main = "Residuals for uninfected ", ylab= "Residuals", xlab = "Index")
+png("residuals_uninf_memory.png")
+plot(model_uninfected$residuals, main = "", ylab= "Residuals", xlab = "Index")
 abline (h=0, col = "red", lwd= 2)
 dev.off()
 
@@ -335,8 +335,8 @@ model_infected <- betareg(
 summary(model_infected)
 
 # Plotting the residuals for infected
-png("residuals_infected.png")
-plot(model_infected$residuals, main = "Residuals for Infected ", ylab= "Residuals", xlab = " Index")
+png("residuals_inf_memory.png")
+plot(model_infected$residuals, main = "", ylab= "Residuals", xlab = " Index")
 abline(h= 0, col= "red", lwd= 2)
 dev.off()
 ```
@@ -368,8 +368,8 @@ residual_vacc_uninf <- ggplot(data_uninfected_residuals, aes(x = vaccine, y = re
 ggsave('Residual by Vaccine for Uninfected Individuals_memory.png', residual_vacc_uninf)
 
 # Q-Q plot for the residuals of the beta regression model
-png("Q-Q Plot of Residuals for Uninfected Individuals_memory.png")
-qqnorm(model_uninfected$residuals)
+png("QQ_Uninf_memory.png")
+qqnorm(model_uninfected$residuals,main="")
 qqline(model_uninfected$residuals, col = "red", lwd = 2)
 dev.off()
 ```
@@ -401,8 +401,8 @@ residual_vacc_inf <- ggplot(data_infected_residuals, aes(x = vaccine, y = residu
 ggsave('Residual by Vaccine for Infected Individuals_memory.png',residual_vacc_inf)
 
 # Q-Q plot for the residuals of the beta regression model
-png("Q-Q Plot of Residuals for Infected Individuals_memory.png")
-qqnorm(model_infected$residuals)
+png("QQ_Inf_memory.png")
+qqnorm(model_infected$residuals,main="")
 qqline(model_infected$residuals, col = "red", lwd = 2)
 dev.off()
 ```
