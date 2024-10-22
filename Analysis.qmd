@@ -152,7 +152,7 @@ ggsave("boxplot by infection status and sex.png", boxplot2)
 boxplot3 <- ggplot(data_tidy_vacc_summed, aes(x = str_to_title(sex), y = response, fill = str_to_title(sex))) +
   geom_boxplot() +
   facet_grid(vaccine ~ str_to_title(infxn),labeller = labeller(vaccine = toupper)) +
-  labs(title = "Summed Response by Sex and Infection Status", x = "Sex", y = "Summed Response") +
+  labs(title = " ", x = "Sex", y = "Summed Response") +
   theme_cowplot_bg()+
   theme(
     axis.text.x = element_blank(),        # Remove x-axis text
