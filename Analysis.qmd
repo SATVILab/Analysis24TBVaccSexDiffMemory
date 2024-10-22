@@ -11,13 +11,14 @@ library(ggplot2)
 library(tibble)
 library(dplyr)
 library(cowplot)
-theme_cowplot_bg <- function(font_size = 14) {
+theme_cowplot_bg <- function(font_size = 16) {
   theme_cowplot(font_size = font_size) +
   theme(
     panel.background = element_rect(fill = "white"),
     plot.background = element_rect(fill = "white")
   )
 }
+library(stringr)
 ```
 
 ## Data prep
@@ -148,9 +149,9 @@ ggsave("boxplot by infection status and sex.png", boxplot2)
 ```
 
 ```{r}
-boxplot3 <- ggplot(data_tidy_vacc_summed, aes(x = sex, y = response, fill = sex)) +
+boxplot3 <- ggplot(data_tidy_vacc_summed, aes(x = str_to_title(sex), y = response, fill = str_to_title(sex))) +
   geom_boxplot() +
-  facet_grid(vaccine ~ infxn,labeller = labeller(vaccine = toupper)) +
+  facet_grid(vaccine ~ str_to_title(infxn),labeller = labeller(vaccine = toupper)) +
   labs(title = "Summed Response by Sex and Infection Status", x = "Sex", y = "Summed Response") +
   theme_cowplot_bg()+
   theme(
@@ -168,7 +169,7 @@ boxplot3 <- ggplot(data_tidy_vacc_summed, aes(x = sex, y = response, fill = sex)
   guides(fill = guide_legend(title = NULL))
 
 # Save the plot
-ggsave("Boxplot summed response slides.png",boxplot3)
+ggsave("Boxplot_magnitude_memory.png",boxplot3)
 ```
 
 Mann- Whitney Test with multiple testing error rate correction:
@@ -315,9 +316,6 @@ p.adjust(p_vec_vaccine_uninf, method = "holm")
 #### Multiple regression
 
 ##### Residuals
-
-###### Infected
-
 Fitting the Beta Regression model for infected:
 
 ```{r}
@@ -363,8 +361,11 @@ residual_vacc_uninf <- ggplot(data_uninfected_residuals, aes(x = vaccine, y = re
   labs(y = "Residuals", x = "Vaccine") +
   scale_x_discrete(labels = toupper) +
   scale_fill_manual(
-    values = c("h56" = "red", "h1" = "blue", "mva85a" = "purple", "m72" = "green")) +
-  theme_cowplot_bg()
+    values = c("h56" = "red", "h1" = "blue", "mva85a" = "purple", "m72" = "green"),  # Capitalized keys
+    labels = c("H56", "H1", "MVA85A", "M72")  # Capitalized labels for the legend
+  ) +
+  theme_cowplot_bg()+
+  guides(fill = guide_legend(title = "Vaccine"))  # Set the legend title to "Vaccine"
 ggsave('Residual by Vaccine for Uninfected Individuals_memory.png', residual_vacc_uninf)
 
 # Q-Q plot for the residuals of the beta regression model
@@ -396,8 +397,11 @@ residual_vacc_inf <- ggplot(data_infected_residuals, aes(x = vaccine, y = residu
   labs(y = "Residuals", x = "Vaccine") +
   scale_x_discrete(labels = toupper) +
   scale_fill_manual(
-    values = c("h56" = "red", "h1" = "blue", "mva85a" = "purple", "m72" = "green")) +
-  theme_cowplot_bg()
+    values = c("h56" = "red", "h1" = "blue", "mva85a" = "purple", "m72" = "green"),  # Capitalized keys
+    labels = c("H56", "H1", "MVA85A", "M72")  # Capitalized labels for the legend
+  ) +
+  theme_cowplot_bg() +
+  guides(fill = guide_legend(title = "Vaccine"))  # Set the legend title to "Vaccine"
 ggsave('Residual by Vaccine for Infected Individuals_memory.png',residual_vacc_inf)
 
 # Q-Q plot for the residuals of the beta regression model
@@ -743,21 +747,20 @@ p_uninf <- ggplot(
   geom_errorbar(aes(ymin = `95% CI Lower`, ymax = `95% CI Upper`), width = 0.1) +
   scale_color_manual(
     values = c("H56" = "red", "H1" = "blue", "MVA85A" = "purple", "M72" = "green")
-  ) +
   scale_y_continuous(limits = c(NA, 1.0)) +
   theme(
     legend.position = "none",
-    axis.title.x = element_text(size = 20),
-    axis.title.y = element_text(size = 20),
-    axis.text.x = element_text(size = 19),
-    axis.text.y = element_text(size = 19)
+    axis.title.x = element_text(size = 20),  # Increase x-axis label size
+    axis.title.y = element_text(size = 20),   # Increase y-axis label size
+    axis.text.x = element_text(size = 19),   # Adjust x-axis tick label size
+    axis.text.y = element_text(size = 19)  
   ) +
   geom_text(
     aes(label = `P-value`, y = `95% CI Upper` + 0.04),
     vjust = -0.5,
     size = 6,
     color = "black"
-  )
+  ) 
 
 # Save the plot for uninfected group
 path_fig_uninf <- "Plot of estimates of effect sizes and CI uninfected_memory.pdf"
@@ -767,200 +770,4 @@ ggsave(
   width = 10,
   height = 6
 )
-```
-
-
-## Response Profile
-
-Boxplot of response profile:
-
-```{r}
-knitr::kable(data_tidy_vacc_freq|>dplyr::filter(ptid=='mva85a-tb008-5' & subset=='cd4'& timepoint=="168"))
-knitr::kable(data_tidy_vacc_profile|>dplyr::filter(ptid=='mva85a-tb008-5'))
-```
-
-```{r}
-rp_box1 <- ggplot(data_tidy_vacc_profile, aes(x = sex, y = response, fill = sex)) +
-  geom_boxplot() +
-  facet_grid(vaccine + infxn ~ cyt_combn, scales = "free") +
-  labs(title = "Response by Sex and Infection Status for each Cytokine Combination",
-       x = "Sex",
-       y = "Response") +
-  theme_cowplot_bg() +
-  cowplot::background_grid(major = "xy") +
-  geom_hline(yintercept = 0, col = "black")
-   
-ggsave('Profile by cytokine combination.png',rp_box1)
-
- #subset boxplot filtering 2 vaccines
-selected_vaccines <- c('h1', 'm72')
-
-# Selected 2 vaccines project slides
-# Filter the dataset
-filtered_data <- data_tidy_vacc_profile %>%
-  filter(vaccine %in% selected_vaccines)
-
-profile_2 <- ggplot(filtered_data, aes(x = sex, y = response, fill = sex)) +
-  geom_boxplot() +
-  facet_grid(vaccine + infxn ~ cyt_combn, scales = "free") +
-  #facet_grid(vaccine ~ infxn,labeller = labeller(vaccine = toupper)) +
-  labs(title = "Response by Sex and Infection Status for each Cytokine Combination",
-       x = "Sex",
-       y = "Response") +
-  theme_cowplot_bg() +
-  theme(axis.text.x = element_blank(),        # Remove x-axis text
-    axis.ticks.x = element_blank(),
-    legend.position = 'bottom')+   
-  background_grid(major='y')+
-  guides(fill = guide_legend(title = NULL))   
-
-ggsave('Profile boxplot 2.png',profile_2)  
-
-```
-
-### PCA Biplot
-```{r}
-#create a wide format where each cytokine combination is a separate column
-profile_wide <- data_tidy_vacc_profile |>
-  tidyr::pivot_wider(names_from = cyt_combn, values_from = response)
-
-# Select only the cytokine combination columns for PCA
-cytokine_cols <- colnames(profile_wide)[grepl("\\+", colnames(profile_wide))]
-pca_result <- prcomp(profile_wide[, cytokine_cols], scale. = TRUE)  
-
-# combine PCA results with the original metadata
-pca_data <- as.data.frame(pca_result$x) |>
-  dplyr::bind_cols(profile_wide |>
-  dplyr::select(vaccine, sex, infxn))
-
-# extract PCA loadings
-loadings <- as.data.frame(pca_result$rotation[, 1:2]) # Take only the first two PCs
-loadings$cyt_combn <- rownames(loadings) # Add cytokine combination names
-
-# scaling factor for arrows
-arrow_scale <- 8.5  
-
-# scale PCA loadings for arrows
-scaled_loadings <- loadings |>
-  dplyr::mutate(PC1 = PC1 * arrow_scale,
-         PC2 = PC2 * arrow_scale)
-
-
-pca_var <- pca_result$sdev^2
-pca_var_explained <- pca_var / sum(pca_var)
-pc1_var <- scales::percent(pca_var_explained[1])
-pc2_var <- scales::percent(pca_var_explained[2])        
-```
-
-```{r}
-pca_plot1 <- ggplot(pca_data, aes(x = PC1, y = PC2, color = vaccine, shape = sex)) +
-  geom_point(size = 3) +
-  facet_wrap(~ infxn) +
-  labs(title = "PCA Biplot", x = "PC1", y = "PC2") + 
-  geom_segment(data = scaled_loadings, aes(x = 0, y = 0, xend = PC1, yend = PC2), 
-               arrow = arrow(length = unit(0.3, "cm")), color = "black", inherit.aes = FALSE) +
-  geom_text(data = scaled_loadings, aes(x = PC1, y = PC2, label = cyt_combn), nudge_x = 1.5, nudge_y = 0.4, vjust = 1, hjust = 1, color = "black", inherit.aes = FALSE) +
-  theme_cowplot_bg()
-
-ggsave('PCA_Biplot.png', pca_plot1, width = 12, height = 6)
-```
-
-```{r}
-# calculate mean positions for each vaccine and sex combination
-mean_positions <- pca_data %>%
-  dplyr::group_by(vaccine, sex,infxn) %>%
-  dplyr::summarize(PC1 = mean(PC1), PC2 = mean(PC2))
-
-mean_positions <- mean_positions %>%
-  dplyr::mutate(combo = paste(vaccine, sex, sep = "-"))
-
-pca_plot2 <- ggplot(pca_data, aes(x = PC1, y = PC2, color = vaccine, shape = sex)) +
-  facet_wrap(~ infxn) +
-  labs(title = "PCA Biplot with Mean Positions", x = "PC1", y = "PC2") + 
-  geom_segment(data = scaled_loadings, aes(x = 0, y = 0, xend = PC1, yend = PC2), 
-               arrow = arrow(length = unit(0.3, "cm")), color = "black", inherit.aes = FALSE) +
-  geom_text(data = scaled_loadings, aes(x = PC1, y = PC2, label = cyt_combn), 
-            nudge_x = 1.5, nudge_y = 0.4, vjust = 1, hjust = 1, color = "black", 
-            inherit.aes = FALSE) +
-  geom_point(size = 3) +          
-  geom_point(data = mean_positions, aes(x = PC1, y = PC2), shape=1,fill=NA,
-             size = 4, color = "orange" ,stroke=1.5) +
-  ggrepel::geom_text_repel(data = mean_positions, aes(x = PC1, y = PC2, label = combo), 
-            nudge_x = 1, nudge_y = 0.5, vjust = 1, hjust = 1, color = "black") +
-  theme_cowplot_bg()
-
-ggsave('pca_ mean position.png', pca_plot2, width = 14, height = 6)
-```
-
-```{r}
-mean_positions <- pca_data %>%
-  dplyr::group_by(vaccine, sex, infxn) %>%
-  dplyr::summarize(PC1 = mean(PC1), PC2 = mean(PC2))
-
-mean_positions <- mean_positions %>%
-  dplyr::mutate(combo = paste(vaccine, sex, sep = "-"))
-
-pca_plot3 <- ggplot(pca_data|>dplyr::filter(infxn=='infected'), aes(x = PC1, y = PC2, color = vaccine, shape = sex)) +
-  labs(title = "PCA Biplot with Mean Positions", 
-       x = paste0("PC1 (", pc1_var, ")"), 
-       y = paste0("PC2 (", pc2_var, ")")) +
-  geom_segment(data = scaled_loadings, aes(x = 0, y = 0, xend = PC1, yend = PC2), 
-               arrow = arrow(length = unit(0.3, "cm")), color = "black", inherit.aes = FALSE) +
-  geom_text(data = scaled_loadings, aes(x = PC1, y = PC2, label = cyt_combn), 
-            nudge_x = 1.5, nudge_y = 0.4, vjust = 1, hjust = 1, color = "black", 
-            inherit.aes = FALSE) +
-  geom_point(size = 3) +          
-  geom_point(data = mean_positions, aes(x = PC1, y = PC2, color = vaccine), 
-             shape=1, fill=NA, size = 4, stroke=1.5) +
-  ggrepel::geom_text_repel(data = mean_positions, aes(x = PC1, y = PC2, label = combo), 
-            nudge_x = 1, nudge_y = 0.5, vjust = 1, hjust = 1, color = "black") +
-  theme_cowplot_bg()+ 
-  theme(axis.text.x = element_blank(),        # Remove x-axis text
-    axis.ticks.x = element_blank())
-
-
-ggsave('pca_mean_position2.png', pca_plot3, width= 10, height =6)
-
-```
-
-### Analysis of Response Profile: 
-Transform response to lie between 0 and 1 using proportions:
-```{r}
-data_tidy_vacc_profile <- data_tidy_vacc_profile |>
-  dplyr::mutate(response = pmax(0, response)) |> 
-  dplyr::mutate(response_proportion = sqrt(response / 100) + 1e-6)
-```
-
-Identify individuals for which the sum of absolute changes from pre-vaccination(vaccine-induced summed response) was 0.02 or more:
-```{r}
-participant_ids <- data_tidy_vacc_summed %>%
-  filter(response >= 0.02) %>%
-  pull(ptid)
-```
-
-Fit beta regression model for infected individuals with interaction term
-```{r}
-library(betareg)
-library(statmod)
-library(numDeriv)
-
-full_model_inf1 <- betareg(response_proportion ~ sex * vaccine * cyt_combn, data = data_tidy_vacc_profile|>
-                  dplyr::filter(ptid %in% participant_ids)|>
-                  dplyr::filter(infxn =="infected"))
-
-summary(full_model_inf1)
-
-library(purrr)
-
-# Split the dataset by cytokine combination
-cytokine_splits <- data_tidy_vacc_profile %>%
-  filter(ptid %in% participant_ids)|>
-  filter(infxn == "infected") %>%
-  split(.$cyt_combn)
-
-# Fit beta regression model for each cytokine combination
-beta_models_inf1 <- map(cytokine_splits, function(data) {
-  betareg(response_proportion ~ sex * vaccine, data = data)
-})
-beta_models_inf1
 ```
