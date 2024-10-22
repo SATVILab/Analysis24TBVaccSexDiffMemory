@@ -1270,8 +1270,11 @@ plot_residuals_boxplot_gg <- function(cyt_combn_label, file_name) {
     labs(y = "Residuals", x = "Vaccine") +
     scale_x_discrete(labels = toupper) +
     scale_fill_manual(
-      values = c("h56" = "red", "h1" = "blue", "mva85a" = "purple", "m72" = "green")) +
-    theme_cowplot_bg()
+      values = c("h56" = "red", "h1" = "blue", "mva85a" = "purple", "m72" = "green"),  # Capitalized keys
+    labels = c("H56", "H1", "MVA85A", "M72")  # Capitalized labels for the legend
+  ) +
+    theme_cowplot_bg()+
+  guides(fill = guide_legend(title = "Vaccine"))  # Set the legend title to "Vaccine"
   
   # Save the plot
   ggsave(file_name, plot = residual_plot)
